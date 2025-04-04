@@ -97,42 +97,43 @@ else:
     print("No documents were found in RagContext.")
 
 
-print("\n--- GENERATED PRACTICE TEST ---")
-print(response.get("response", response))
+# print("\n--- GENERATED PRACTICE TEST ---")
+# print(response.get("response", response))
 
-# Parse test into questions + answers
+# --- Parse test into questions + answers ---
+import re
+
 raw_output = response.get("response", response)
 
-# Split by answer key marker
+# Split by the answer key section
 if "--- ANSWER KEY ---" in raw_output:
     question_block, answer_block = raw_output.split("--- ANSWER KEY ---", 1)
 else:
-    print("❗ Could not find answer key in output.")
     question_block = raw_output
     answer_block = ""
 
-# Match all questions
+# Match all questions (with or without choices)
 question_pattern = re.compile(
-    r"(\d+)\.\s+(.*?)\n((?:[A-D]\.\s+.*\n)+)",
+    r"(\d+)\.\s+(.*?)\n\n((?:[A-D]\.\s+.*?\n){0,4})",
     re.DOTALL
 )
 
-# Match choices
-choice_pattern = re.compile(r"[A-D]\.\s+(.*?)\n")
+# Match individual choices (A., B., etc.)
+choice_pattern = re.compile(r"[A-D]\.\s+(.*)")
 
-# Match answers
-answer_pattern = re.compile(r"(\d+)\.\s*([A-D])")
+# Match answers (e.g., 1. A or 2. A. some explanation)
+answer_pattern = re.compile(r"(\d+)\.\s*([A-D])(?:\.\s+.*)?")
 
 questions_dict = {}
 
 for match in question_pattern.finditer(question_block):
     q_number = int(match.group(1))
     q_text = match.group(2).strip()
-    q_choices_raw = match.group(3)
+    q_choices_raw = match.group(3).strip()
 
     if q_choices_raw:
         q_type = "multiple choice"
-        choices = [c.strip() for c in choice_pattern.findall(q_choices_raw)]
+        choices = choice_pattern.findall(q_choices_raw)
     else:
         q_type = "short answer"
         choices = []
@@ -142,17 +143,34 @@ for match in question_pattern.finditer(question_block):
         "type": q_type,
     }
 
-    if q_type == "multiple choice":
+    if choices:
         questions_dict[q_number]["choices"] = choices
 
-# Now parse the answer key and attach to each question
+# Attach correct answers (and resolve to full text for multiple choice)
 for match in answer_pattern.finditer(answer_block):
     q_number = int(match.group(1))
-    answer = match.group(2)
+    answer_letter = match.group(2).strip()
     if q_number in questions_dict:
-        questions_dict[q_number]["answer"] = answer
+        qdata = questions_dict[q_number]
+        if qdata["type"] == "multiple choice":
+            letter_to_index = {"A": 0, "B": 1, "C": 2, "D": 3}
+            index = letter_to_index.get(answer_letter)
+            if index is not None and "choices" in qdata and index < len(qdata["choices"]):
+                qdata["answer"] = qdata["choices"][index]
+            else:
+                qdata["answer"] = f"(Invalid answer letter: {answer_letter})"
+        else:
+            qdata["answer"] = answer_letter
 
-# Display result
+# If short answers weren’t matched in the key above, fall back to line-by-line
+if any(q["type"] == "short answer" and "answer" not in q for q in questions_dict.values()):
+    short_answers = [line.strip() for line in answer_block.strip().split("\n") if line.strip()]
+    for idx, (qid, qdata) in enumerate(questions_dict.items()):
+        if qdata["type"] == "short answer" and "answer" not in qdata:
+            if idx < len(short_answers):
+                qdata["answer"] = short_answers[idx].split(".", 1)[-1].strip()
+
+# --- Final Output ---
 print("\n--- PARSED QUESTION OBJECT ---")
 for qid, q in questions_dict.items():
     print(f"{qid}: {q}")
