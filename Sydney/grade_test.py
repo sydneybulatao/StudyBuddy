@@ -28,9 +28,11 @@ they did on the questions pertaining to that topic. In addition, you will output
 a short blurb of 2-3 sentences that lets the student know how well they did on the test, 
 encourages them to further study topics that they didn't do well on, and commends
 them for topics they did do well on. Use a friendly, encouraging, and supportive tone. 
-Especially if they got less than half of the questions right, make sure you let them know 
-that they didn't do well on the test and should put some more work into studying,
-but still use an encouraging tone. Also use emojis in your blurb to make it friendly!
+Use emojis in your blurb to make it friendly!
+
+If they did not do well on the test (the number correct was low compared to the total),
+DO NOT say they did a good job. Instead, encourage them to put a bit more
+time into studying than they currently have been. 
 
 KEYWORD CRITERIA:
 Revisit 🔴: The student got all "INCORRECT" for questions pertaining to the topic.
@@ -173,8 +175,8 @@ def grade_test_page():
       st.write("")
 
     with st.sidebar:
+      st.sidebar.title("Insights ✨")
       insights = ""
       with st.spinner("Gathering insights from your results..."):
         insights = get_insights(test_type, topics, questions, graded_questions, correct, total)
-      st.subheader("Insights ✨")
       st.write(insights)
