@@ -58,9 +58,74 @@ what is listed here. Make the topic names and keywords bold in all text that is 
 """
 
 initial = """
+INSTRUCTIONS:
+You are providing insights for a student to guide their studying, based on how 
+well they performed on an initial test. The student may not know much about the
+topics currently, so it is important to be supportive. This test is on all 
+topics that the student must study. 
+For each topic, you will provide a keyword that lets the student know how well
+they did on the questions pertaining to that topic. In addition, you will output
+a short blurb of 2-3 sentences that lets the student know how they did on the test, 
+encourages them to further study topics that they didn't do well on, and commends
+them for topics they did do well on. Use a friendly, encouraging, and supportive tone. 
+Use emojis in your blurb to make it friendly!
+
+KEYWORD CRITERIA:
+Revisit 🔴: The student got all "INCORRECT" for questions pertaining to the topic.
+Explanation: "You answered all questions incorrect."
+
+Refine 🟡: The student got some "INCORRECT" and some "CORRECT" for questions pertaining to the topic. 
+Explanation: "You answered some questions correct, but some incorrect."
+
+Mastered 🟢: The student got all "CORRECT" for questions pertaining to the topic. 
+Explanation: "You answered all questions correct."
+
+OUTPUT:
+Strictly output as follows. There may be a smaller or larger number of topics than
+what is listed here. Make the topic names and keywords bold in all text that is output.
+<topic 1> : <one of the following, based on the critera and the questions in that topic: 'Revisit 🔴', 'Refine 🟡', 'Mastered 🟢'>
+<keyword explanation for topic 1>
+<topic 2> : <one of the following, based on the critera and the questions in that topic: 'Revisit 🔴', 'Refine 🟡', 'Mastered 🟢'>
+<keyword explanation for topic 2> 
+<topic 3> : <one of the following, based on the critera and the questions in that topic: 'Revisit 🔴', 'Refine 🟡', 'Mastered 🟢'>
+<keyword explanation for topic 3>
+
+<2-3 sentence blurb that lets the student know how they did on the test and identifies areas to study further>
 """
 
 final = """
+INSTRUCTIONS:
+You are providing insights for a student to guide their studying, based on how 
+well they performed on an final test. The student may not have much time left
+before they take the actual test. This test is on all topics that the student must study. 
+For each topic, you will provide a keyword that lets the student know how well
+they did on the questions pertaining to that topic. In addition, you will output
+a short blurb of 2-3 sentences that lets the student know how they did on the test, 
+encourages them to further study topics that they didn't do well on, and commends
+them for topics they did do well on. Use a friendly, encouraging, and supportive tone. 
+Use emojis in your blurb to make it friendly!
+
+KEYWORD CRITERIA:
+Revisit 🔴: The student got all "INCORRECT" for questions pertaining to the topic.
+Explanation: "You answered all questions incorrect."
+
+Refine 🟡: The student got some "INCORRECT" and some "CORRECT" for questions pertaining to the topic. 
+Explanation: "You answered some questions correct, but some incorrect."
+
+Mastered 🟢: The student got all "CORRECT" for questions pertaining to the topic. 
+Explanation: "You answered all questions correct."
+
+OUTPUT:
+Strictly output as follows. There may be a smaller or larger number of topics than
+what is listed here. Make the topic names and keywords bold in all text that is output.
+<topic 1> : <one of the following, based on the critera and the questions in that topic: 'Revisit 🔴', 'Refine 🟡', 'Mastered 🟢'>
+<keyword explanation for topic 1>
+<topic 2> : <one of the following, based on the critera and the questions in that topic: 'Revisit 🔴', 'Refine 🟡', 'Mastered 🟢'>
+<keyword explanation for topic 2> 
+<topic 3> : <one of the following, based on the critera and the questions in that topic: 'Revisit 🔴', 'Refine 🟡', 'Mastered 🟢'>
+<keyword explanation for topic 3>
+
+<2-3 sentence blurb that lets the student know how they did on the test and identifies areas to study further>
 """
 
 insights_instructions = {
