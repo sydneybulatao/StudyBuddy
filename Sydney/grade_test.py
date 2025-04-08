@@ -181,7 +181,8 @@ def grade_test_page():
     responses = st.session_state.responses
 
     # Page elements
-    st.title("Graded " + test_type)
+    st.title("Graded " + test_type + " ⋆｡°✎ᝰ ˎˊ˗") 
+    st.header("Topics covered: " + ", ".join(topics)) 
 
     # Grade test
     graded_questions = {}

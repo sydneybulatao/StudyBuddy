@@ -52,8 +52,8 @@ def take_test_page():
     grade_test_page()
   else:
     st.session_state.test_submitted = False # reset this for new test
-    st.title(test_type) 
-    st.caption("Topics covered: " + ", ".join(topics)) 
+    st.title(test_type + " ⋆｡°✎ᝰ ˎˊ˗") 
+    st.header("Topics covered: " + ", ".join(topics)) 
 
     ### Test form
     test =  st.form("Practice Test")
