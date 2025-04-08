@@ -6,7 +6,7 @@ import os
 import re
 from string import Template
 
-SESSION_ID = 'test-generator'
+SESSION_ID = 'summary_generator'
 
 def upload_documents_for_rag():
     context_dir = "RagContext"
@@ -20,6 +20,8 @@ def upload_documents_for_rag():
                 session_id=SESSION_ID
             )
             print(f"Uploaded: {response}")
+
+    # generate summary of documents and summarize info that user uploads
 
 def generate_summary(rag_context):
     context_string = ""
@@ -55,7 +57,7 @@ if __name__ == '__main__':
 
     # document is already added to RAG_context
     # Query used to retrieve relevant context
-    query = 'Summarize the most recently uploaded rag document.'
+    query = 'Generate a list of topics for a study guide based on all of the documents in the rag context.'
 
     # assuming some document(s) has previously been uploaded to session_id=RAG
     rag_context = retrieve(

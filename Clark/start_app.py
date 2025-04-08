@@ -2,6 +2,10 @@
 
 import streamlit as st
 import time
+from llmproxy import generate, pdf_upload, retrieve
+import os
+import re
+from string import Template
 
 def initial_input():
   # Overall page elements
@@ -45,6 +49,13 @@ def initial_input():
     time.sleep(1)
     st.session_state.input_submitted = True
     # TODO: connect here to processing data, uploading rag, etc
+
+    ## CLARK CODE
+    # You can access all of the form inputs by doing 
+    # st.session_state.initial_input[<field>]
+    # 1. add files to RAG context
+    # 2. generate summary of each file (study topics?)
+
 
 def start_page():
   if 'start' in st.session_state and st.session_state.start:
