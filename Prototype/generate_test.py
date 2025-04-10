@@ -188,11 +188,13 @@ def generate_test_page():
       # Extract answers
       answers = [l.strip() for l in lines[answer_key_start + 1:] if l.strip()]
       for idx, answer in enumerate(answers, 1):
-          if idx in test_data:
-              if question_type == "multiple choice":
-                  test_data[idx]["answer"] = re.sub(r"^Q\d+:\s*[A-D]\.\s*", "", answer)
-              else:
-                  test_data[idx]["answer"] = re.sub(r"^Q\d+:\s*", "", answer)
+        if idx in test_data:
+            # Clean answer formatting for both short answer and MC
+            answer_clean = re.sub(r"^Q\d+:\s*", "", answer)
+            if question_type == "multiple choice":
+                answer_clean = re.sub(r"^[A-D]\.\s*", "", answer_clean)
+            test_data[idx]["answer"] = answer_clean.strip()
+
 
       # Update system session variables
       # Test information
