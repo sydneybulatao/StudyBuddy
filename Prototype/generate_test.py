@@ -141,7 +141,7 @@ def generate_test_page():
       query = f"Please generate a practice test for a class called '{subject}'. Use only the uploaded class notes or study materials available in the session context."
 
       response = generate(
-          model='azure-phi3',
+          model='4o-mini',
           system=system_prompt,
           query=query,
           temperature=0.0,
