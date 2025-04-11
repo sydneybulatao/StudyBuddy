@@ -2,7 +2,6 @@
 
 import streamlit as st
 from llmproxy import generate
-import pprint
 
 # TODO: maybe add explanation to why wrong/what was missing? 
 grading_instructions = """
@@ -49,11 +48,8 @@ OUTPUT:
 Strictly output as follows. There may be a smaller or larger number of topics than
 what is listed here. Make the topic names and keywords bold in all text that is output.
 <topic 1> : <one of the following, based on the critera and the questions in that topic: 'Revisit 🔴', 'Refine 🟡', 'Mastered 🟢'>
-<keyword explanation for topic 1>
 <topic 2> : <one of the following, based on the critera and the questions in that topic: 'Revisit 🔴', 'Refine 🟡', 'Mastered 🟢'>
-<keyword explanation for topic 2> 
 <topic 3> : <one of the following, based on the critera and the questions in that topic: 'Revisit 🔴', 'Refine 🟡', 'Mastered 🟢'>
-<keyword explanation for topic 3>
 
 <2-3 sentence blurb that lets the student know how well they did on the test and identifies areas to study further>
 """
@@ -87,11 +83,8 @@ OUTPUT:
 Strictly output as follows. There may be a smaller or larger number of topics than
 what is listed here. Make the topic names and keywords bold in all text that is output.
 <topic 1> : <one of the following, based on the critera and the questions in that topic: 'Revisit 🔴', 'Refine 🟡', 'Mastered 🟢'>
-<keyword explanation for topic 1>
 <topic 2> : <one of the following, based on the critera and the questions in that topic: 'Revisit 🔴', 'Refine 🟡', 'Mastered 🟢'>
-<keyword explanation for topic 2> 
 <topic 3> : <one of the following, based on the critera and the questions in that topic: 'Revisit 🔴', 'Refine 🟡', 'Mastered 🟢'>
-<keyword explanation for topic 3>
 
 <2-3 sentence blurb that lets the student know how they did on the test and identifies areas to study further>
 """
@@ -110,10 +103,13 @@ Use emojis in your blurb to make it friendly!
 
 KEYWORD CRITERIA:
 Revisit 🔴: The student got all "INCORRECT" for questions pertaining to the topic.
+Explanation: "You answered all questions incorrect."
 
 Refine 🟡: The student got some "INCORRECT" and some "CORRECT" for questions pertaining to the topic. 
+Explanation: "You answered some questions correct, but some incorrect."
 
 Mastered 🟢: The student got all "CORRECT" for questions pertaining to the topic. 
+Explanation: "You answered all questions correct."
 
 OUTPUT:
 Strictly output as follows. There may be a smaller or larger number of topics than
@@ -164,7 +160,7 @@ def get_insights(test_type, topics, questions, graded_questions, correct, total)
     query = "CORRECT: " + str(correct) + ", TOTAL: " + str(total) + ", TOPICS: " + ", ".join(topics) + ", ANSWERS: " + student_answers,
     temperature = 0.0,
     lastk = 0,
-    session_id = "insights_session",
+    session_id = st.session_state.session_id,
     rag_usage = False)
 
   return response.get("response", "") if isinstance(response, dict) else response
@@ -178,13 +174,9 @@ def grade_test_page():
     responses = st.session_state.responses
     subject = st.session_state.subject
 
-    # Preview test_data dictionary - FOR DEBUGGING
-    # with st.expander("🧠 View Parsed Test Data (Dictionary Format)"):
-    #     st.code(pprint.pformat(questions, sort_dicts=False))
-
     # Page elements
     st.title("Study Buddy 🌿•₊✧💻⋆⭒˚☕️｡⋆")
-    st.header("Graded " +  subject + " " + test_type) 
+    st.header(subject + " " + test_type) 
     if (test_type == "Check-In Test"):
       st.subheader("Topics covered: " + ", ".join(topics)) 
 

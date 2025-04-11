@@ -20,7 +20,7 @@ def generate_test_page():
     st.write("Upload your class materials and build a custom practice test to help you study.")
 
     # --- Upload PDFs ---
-    uploaded_files = st.file_uploader("📚 Upload your PDF study materials", type="pdf", accept_multiple_files=True)
+    #uploaded_files = st.file_uploader("📚 Upload your PDF study materials", type="pdf", accept_multiple_files=True)
 
     # --- Test Configuration ---
     st.subheader("🛠️ Customize Your Test")
@@ -46,7 +46,7 @@ def generate_test_page():
 
     if st.session_state.test_input_submitted:
       # TODO: form verification - ensure all questions answered or attempted
-      st.success("Form submitted! Starting document upload and test generation...")
+      st.success("Form submitted! Starting test generation...")
 
       # Get test input
       subject = st.session_state.test_input["subject"]
@@ -54,36 +54,34 @@ def generate_test_page():
       question_type = st.session_state.test_input["question_type"]
       familiarity = st.session_state.test_input["familiarity"]
 
-      # Set a constant session ID for now
-      # TODO: create a unique session ID for each student
-      SESSION_ID = "streamlit-test-session-8-9"
+      SESSION_ID = st.session_state.session_id
 
       # Create temp dir to save uploaded PDFs
-      TEMP_DIR = "temp_uploads"
-      os.makedirs(TEMP_DIR, exist_ok=True)
+      # TEMP_DIR = "temp_uploads"
+      # os.makedirs(TEMP_DIR, exist_ok=True)
 
-      uploaded_filenames = []
+      # uploaded_filenames = []
 
-      # Upload PDFs to RAG
-      for uploaded_file in uploaded_files:
-          file_path = os.path.join(TEMP_DIR, uploaded_file.name)
-          with open(file_path, "wb") as f:
-              f.write(uploaded_file.getbuffer())
-          uploaded_filenames.append(uploaded_file.name)
+      # # Upload PDFs to RAG
+      # for uploaded_file in uploaded_files:
+      #     file_path = os.path.join(TEMP_DIR, uploaded_file.name)
+      #     with open(file_path, "wb") as f:
+      #         f.write(uploaded_file.getbuffer())
+      #     uploaded_filenames.append(uploaded_file.name)
           
-          with st.spinner(f"Uploading {uploaded_file.name} to RAG..."):
-              response = pdf_upload(
-                  path=file_path,
-                  strategy='smart',
-                  session_id=SESSION_ID
-              )
-              st.success(f"Uploaded {uploaded_file.name}")
+      #     with st.spinner(f"Uploading {uploaded_file.name} to RAG..."):
+      #         response = pdf_upload(
+      #             path=file_path,
+      #             strategy='smart',
+      #             session_id=SESSION_ID
+      #         )
+      #         st.success(f"Uploaded {uploaded_file.name}")
 
       # TODO: create a unique folder to store each students' notes 
 
       # Wait a bit to ensure RAG context is indexed
-      st.info("Indexing uploaded documents...")
-      time.sleep(8)
+      # st.info("Indexing uploaded documents...")
+      # time.sleep(8)
 
       st.subheader("📄 Generating Your Practice Test...")
       st.info("This may take a moment...")
@@ -205,9 +203,3 @@ def generate_test_page():
 
       st.session_state.test_input_submitted = True
       st.rerun()
-
-      # # Preview test_data dictionary
-      # with st.expander("🧠 View Parsed Test Data (Dictionary Format)"):
-      #     st.code(pprint.pformat(test_data, sort_dicts=False))
-
-generate_test_page()

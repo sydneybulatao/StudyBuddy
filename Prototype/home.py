@@ -1,6 +1,7 @@
 import streamlit as st
 from generate_test import generate_test_page
 from streamlit_calendar import calendar
+from study_calendar import display_calendar
 
 def home_page():
   ### Handle flow
@@ -19,47 +20,17 @@ def home_page():
   
     ### Overall page elements
     st.title("Study Buddy 🌿•₊✧💻⋆⭒˚☕️｡⋆")
-    # cal, nav = st.columns([6, 1])
-
-    ### Buttons for naviation
-    # take_test = nav.button("Take Practice Test", 
-    #   help="Take an initial assessment, check-in test, or final assessment.",
-    #   use_container_width=True)
-    # upload_notes = nav.button("Upload Notes", 
-    #   help="Add additional notes to your studying material.",
-    #   use_container_width=True)
+    calendar, nav = st.columns([0.7, 0.3])
 
     ### Study plan calendar
-    calendar_options = {
-        "headerToolbar": {
-                "left": "today,prev,next",
-                "center": "title",
-                "right": "dayGridDay,dayGridWeek,dayGridMonth"},
-        "initialView": "dayGridMonth",
-        "editable": True,
-        "selectable": True,
-        "slotMinTime": "00:00:00",
-        "slotMaxTime": "23:59:59",
-    }
-
-    calendar_events = [] # TODO: INPUT EVENTS HERE
-
-    # Display calendar
-    # with cal:
-      # calendar(
-      #   events=calendar_events,
-      #   options=calendar_options
-      # )
-    calendar(
-        events=calendar_events,
-        options=calendar_options
-      )
+    with calendar:
+      display_calendar(st.session_state.initial_input.get("course"))
 
     ### Buttons for naviation
-    take_test = st.button("Take Practice Test", 
+    take_test = nav.button("Take Practice Test", 
       help="Take an initial assessment, check-in test, or final assessment.",
       use_container_width=True)
-    upload_notes = st.button("Upload Notes", 
+    upload_notes = nav.button("Upload Notes", 
       help="Add additional notes to your studying material.",
       use_container_width=True)
 
@@ -71,5 +42,3 @@ def home_page():
     elif upload_notes:
       st.session_state.upload_notes = True
       st.rerun()
-
-home_page()

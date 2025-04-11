@@ -116,3 +116,35 @@ def text_upload(
 
     response = upload(multipart_form_data)
     return response
+
+def retrieve(
+    query: str,
+    session_id: str,
+    rag_threshold: float,
+    rag_k: int
+    ):
+
+    headers = {
+        'x-api-key': api_key,
+        'request_type': 'retrieve'
+    }
+
+    request = {
+        'query': query,
+        'session_id': session_id,
+        'rag_threshold': rag_threshold,
+        'rag_k': rag_k
+    }
+
+    msg = None
+
+    try:
+        response = requests.post(end_point, headers=headers, json=request)
+
+        if response.status_code == 200:
+            msg = json.loads(response.text)
+        else:
+            msg = f"Error: Received response code {response.status_code}"
+    except requests.exceptions.RequestException as e:
+        msg = f"An error occurred: {e}"
+    return msg  
