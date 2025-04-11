@@ -9,26 +9,27 @@ from take_test import take_test_page
 def generate_test_page():
   if 'test_input_submitted' in st.session_state and st.session_state.test_input_submitted:
     take_test_page() # Move on to taking the test
-    return
   else:
     # Otherwise, still need to gather input to generate test
     st.session_state.test_input_submitted = False # reset this for new test
 
     # Page styling
-    st.title("Study Buddy 🌿•₊✧💻⋆⭒˚☕️｡⋆")
+    st.title("Study Buddy")
+    st.divider()
+
     st.header("Practice Test Generator")
-    st.write("Upload your class materials and build a custom practice test to help you study.")
+    st.write("Build a custom practice test to help you study.")
 
     # --- Upload PDFs ---
     #uploaded_files = st.file_uploader("📚 Upload your PDF study materials", type="pdf", accept_multiple_files=True)
 
     # --- Test Configuration ---
+    subject = st.session_state.initial_input.get("course")
     st.subheader("🛠️ Customize Your Test")
+    st.write("Subject: " + subject)
     st.session_state.test_input = {}
 
     with st.form(key='test_form'):
-        st.session_state.test_input["subject"] = st.text_input("Subject / Class Name", placeholder="e.g. Philosophy of Law")
-
         st.session_state.test_input["num_questions"] = st.slider("Number of Questions", min_value=5, max_value=20, value=10)
 
         st.session_state.test_input["question_type"] = st.selectbox(
@@ -49,7 +50,6 @@ def generate_test_page():
       st.success("Form submitted! Starting test generation...")
 
       # Get test input
-      subject = st.session_state.test_input["subject"]
       num_questions = st.session_state.test_input["num_questions"]
       question_type = st.session_state.test_input["question_type"]
       familiarity = st.session_state.test_input["familiarity"]

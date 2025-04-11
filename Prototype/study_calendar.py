@@ -3,8 +3,7 @@ from datetime import datetime, timedelta
 import streamlit as st
 
 def display_calendar(course_name):
-    st.divider()
-    st.header("🗓️ Your Study Calendar")
+    st.header("🗓️ " + st.session_state.initial_input.get("name") + "'s Study Calendar")
 
     test_date = st.session_state.initial_input.get("test_date")
 

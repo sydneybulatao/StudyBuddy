@@ -12,7 +12,6 @@ def take_test_page():
   # Grade test once submitted
   if 'test_submitted' in st.session_state and st.session_state.test_submitted:
     grade_test_page()
-    return
   else:
     # Get back test information
     test_type = st.session_state.test_type
@@ -21,7 +20,9 @@ def take_test_page():
     subject = st.session_state.subject
 
     st.session_state.test_submitted = False # reset this for new test
-    st.title("Study Buddy 🌿•₊✧💻⋆⭒˚☕️｡⋆")
+    st.title("Study Buddy")
+    st.divider()
+
     st.header(subject + " " + test_type) 
     if (test_type == "Check-In Test"):
       st.subheader("Topics covered: " + ", ".join(topics)) 

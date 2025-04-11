@@ -93,8 +93,6 @@ import time
 from string import Template
 import streamlit as st
 
-SESSION_ID = 'hiba-meeting'
-
 def summarize_uploaded_file(file_name: str) -> str:
     query = f"Summarize the document: {file_name}"
     

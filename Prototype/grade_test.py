@@ -3,7 +3,6 @@
 import streamlit as st
 from llmproxy import generate
 
-# TODO: maybe add explanation to why wrong/what was missing? 
 grading_instructions = """
 INSTRUCTIONS:
 You are grading test answers. You will be given the question,
@@ -175,7 +174,9 @@ def grade_test_page():
     subject = st.session_state.subject
 
     # Page elements
-    st.title("Study Buddy 🌿•₊✧💻⋆⭒˚☕️｡⋆")
+    st.title("Study Buddy")
+    st.divider()
+
     st.header(subject + " " + test_type) 
     if (test_type == "Check-In Test"):
       st.subheader("Topics covered: " + ", ".join(topics)) 

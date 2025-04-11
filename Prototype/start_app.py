@@ -15,7 +15,8 @@ def initial_input():
     else:
         # Overall page elements
         st.input_submitted = False
-        st.title("Study Buddy 🌿•₊✧💻⋆⭒˚☕️｡⋆")
+        st.title("Study Buddy")
+        st.divider()
         st.header("Help us create your personalized study plan!")
         st.session_state.home = False
 
@@ -98,12 +99,12 @@ def start_page():
         # Overall page elements
         st.set_page_config(layout="wide")
         st.start = False
-        st.title("Study Buddy 🌿•₊✧💻⋆⭒˚☕️｡⋆")
+        st.title("Study Buddy")
+        st.divider()
 
         # Description of app
         st.subheader("Welcome to Study Buddy!")
         st.write("Design a Custom Study Plan, Break It Into Daily Goals, and Track Your Progress with Interactive Check-Ins!")
-        st.divider()
 
         with st.form("Start Page"):
             steps_html = """
