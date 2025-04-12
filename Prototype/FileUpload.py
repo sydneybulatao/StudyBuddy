@@ -1,99 +1,13 @@
-# # File upload logic
-
-# from llmproxy import generate, pdf_upload, retrieve
-# import time
-# import os
-# import re
-# from string import Template
-
-# SESSION_ID = 'summary_generator'
-
-# def upload_documents_for_rag():
-#     context_dir = "RagContext"
-#     for filename in os.listdir(context_dir):
-#         if filename.lower().endswith('.pdf'):
-#             path = os.path.join(context_dir, filename)
-#             print(f"Uploading {path} to RAG...")
-#             response = pdf_upload(
-#                 path=path,
-#                 strategy='smart',
-#                 session_id=SESSION_ID
-#             )
-#             print(f"Uploaded: {response}")
-
-#     # generate summary of documents and summarize info that user uploads
-
-# def generate_summary(rag_context):
-#     context_string = ""
-
-#     i=1
-#     for collection in rag_context:
-    
-#         if not context_string:
-#             context_string = """The following is additional context that may be helpful in answering the user's query."""
-
-#         context_string += """
-#         #{} {}
-#         """.format(i, collection['doc_summary'])
-#         j=1
-#         for chunk in collection['chunks']:
-#             context_string+= """
-#             #{}.{} {}
-#             """.format(i,j, chunk)
-#             j+=1
-#         i+=1
-#     return context_string
-
-# if __name__ == '__main__':
-#     # Starting screen and information
-#     print("--- Notes Summary ---")
-#     print("This part generates a note summary based on the files that are uploaded.\n")
-#     input("Press Enter to proceed...")
-#     upload_documents_for_rag()
-
-#     print("Waiting for uploaded documents to be indexed...")
-#     time.sleep(10)
-#     os.system('clear')
-
-#     # document is already added to RAG_context
-#     # Query used to retrieve relevant context
-#     query = 'Generate a list of topics for a study guide based on all of the documents in the rag context.'
-
-#     # assuming some document(s) has previously been uploaded to session_id=RAG
-#     rag_context = retrieve(
-#         query =query,
-#         session_id=SESSION_ID,
-#         rag_threshold = 0.2,
-#         rag_k = 3)
-
-#     # combining query with rag_context
-#     query_with_rag_context = Template("$query\n$rag_context").substitute(
-#                             query=query,
-#                             rag_context=generate_summary(rag_context))
-#     print(query_with_rag_context)
-
-#     # Pass to LLM using a different session (session_id=GenericSession)
-#     # You can also set rag_usage=True to use RAG context from GenericSession
-#     response = generate(model = '4o-mini',
-#         system = 'Answer my question',
-#         query = query_with_rag_context,
-#         temperature=0.0,
-#         lastk=0,
-#         session_id=SESSION_ID,
-#         rag_usage = False
-#         )
-
-#     print(response)
-
-# File: /Users/clarkbolin/Desktop/CS150/StudyBuddy/Clark/FileUpload.py
+# File: /Users/clarkbolin/Desktop/CS150/StudyBuddy/Prototype/FileUpload.py
 
 from llmproxy import generate, pdf_upload, retrieve
 import tempfile
 import time
-from string import Template
 import streamlit as st
+from typing import List, Tuple
 
-def summarize_uploaded_file(file_name: str) -> str:
+def summarize_uploaded_file(file_name: str) -> Tuple[str, List[str]]:
+    """Retrieve, summarize, and extract study topics from uploaded file."""
     query = f"Summarize the document: {file_name}"
     
     rag_context = retrieve(
@@ -105,21 +19,68 @@ def summarize_uploaded_file(file_name: str) -> str:
 
     return generate_summary(rag_context)
 
-def generate_summary(rag_context: list) -> str:
-    context_string = ""
-    i = 1
+def generate_summary(rag_context: list) -> Tuple[str, List[str]]:
+    """Generate a clean, coherent LLM-based summary and extract study topics."""
+    if not rag_context:
+        return "No context available to summarize.", []
+
+    # Step 1: Merge all chunks into one big context
+    merged_text = ""
     for collection in rag_context:
-        if not context_string:
-            context_string = "Summary based on document content:\n"
-        context_string += f"\n#{i} {collection['doc_summary']}\n"
-        j = 1
-        for chunk in collection['chunks']:
-            context_string += f"#{i}.{j} {chunk}\n"
-            j += 1
-        i += 1
-    return context_string
+        merged_text += collection.get('doc_summary', '') + "\n\n"
+        merged_text += "\n".join(collection.get('chunks', [])) + "\n\n"
+
+    # Step 2: Ask the LLM to summarize the whole text properly
+    prompt = f"""
+You are a helpful study assistant.
+
+Summarize the following notes into clear, coherent study notes.
+Organize the output into:
+1. A short overall summary
+2. A list of 5-10 study topics (bullet points, bold main topics)
+
+Here are the raw notes:
+
+{merged_text}
+"""
+
+    # Step 3: Generate clean summary
+    response = generate(
+        model="4o-mini",
+        system="Study Summarizer",
+        query=prompt,
+        temperature=0.2,
+        lastk=0,
+        session_id=st.session_state.session_id,
+        rag_usage=False
+    )
+
+    summary_text = response['response']
+
+    # Step 4: Extract only large bold study topics
+    study_topics = []
+    lines = summary_text.splitlines()
+    collecting_topics = False
+
+    for line in lines:
+        line = line.strip()
+        if line.lower().startswith("### study topics"):
+            collecting_topics = True
+            continue
+        if collecting_topics:
+            if line.startswith("-"):
+                clean_topic = line.lstrip("- ").strip()
+                if clean_topic.startswith("**") and clean_topic.endswith("**"):
+                    clean_topic = clean_topic.replace("**", "").strip()
+                    if clean_topic:
+                        study_topics.append(clean_topic)
+            elif line.startswith("###"):
+                break  # Stop if next heading starts
+
+    return summary_text, study_topics
 
 def upload_file_to_rag(uploaded_file):
+    """Upload a PDF file to RAG system."""
     with tempfile.NamedTemporaryFile(delete=False, suffix=".pdf") as tmp_file:
         tmp_file.write(uploaded_file.getvalue())
         tmp_path = tmp_file.name
@@ -129,6 +90,6 @@ def upload_file_to_rag(uploaded_file):
         strategy='smart',
         session_id=st.session_state.session_id
     )
-    time.sleep(10)  # Wait to ensure indexing
+    time.sleep(10)  # Ensure RAG indexes the document
     print(response)
     return uploaded_file.name
