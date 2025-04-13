@@ -44,7 +44,7 @@ def initial_input():
         study_topics = upload_notes(form)
         print(study_topics)
 
-        if st.button("✅ Continue to Dashboard"):
+        if st.button("✅ Continue to Dashboard", disabled=(study_topics == None)):
             st.session_state.home = True
             st.rerun()
 
