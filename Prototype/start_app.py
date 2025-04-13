@@ -30,7 +30,6 @@ def initial_input():
 
         # Course
         response = form.text_input("Course Name:")
-        course_name = response
         st.session_state.initial_input["course"] = response
 
         # Date of Test
@@ -44,6 +43,10 @@ def initial_input():
 
         study_topics = upload_notes(form)
         print(study_topics)
+
+        if st.button("✅ Continue to Dashboard"):
+            st.session_state.home = True
+            st.rerun()
 
 def upload_notes(form):
     response = form.file_uploader(
@@ -105,10 +108,6 @@ def upload_notes(form):
 
         # Stop Here and Review
         st.info("📚 Please review your summaries carefully before moving forward.")
-
-        if st.button("✅ Continue to Dashboard"):
-            st.session_state.home = True
-            st.rerun()
 
         return st.session_state.all_study_topics
 
