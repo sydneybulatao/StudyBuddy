@@ -17,6 +17,10 @@ def generate_test_page():
     st.title("Study Buddy")
     st.divider()
 
+    home_button = st.button("Home")
+    if home_button:
+      return
+
     st.header("Practice Test Generator")
     st.write("Build a custom practice test to help you study.")
 
@@ -76,8 +80,6 @@ def generate_test_page():
       #             session_id=SESSION_ID
       #         )
       #         st.success(f"Uploaded {uploaded_file.name}")
-
-      # TODO: create a unique folder to store each students' notes 
 
       # Wait a bit to ensure RAG context is indexed
       # st.info("Indexing uploaded documents...")
