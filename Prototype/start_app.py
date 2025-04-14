@@ -26,11 +26,11 @@ def initial_input():
 
         # Name
         response = form.text_input("Name:")
-        st.session_state.initial_input["name"] = response
+        st.session_state.initial_input["name"] = response.lower().title()
 
         # Course
         response = form.text_input("Course Name:")
-        st.session_state.initial_input["course"] = response
+        st.session_state.initial_input["course"] = response.lower().title()
 
         # Date of Test
         response = form.date_input("Date of Test:", value=None)
@@ -42,7 +42,7 @@ def initial_input():
         st.session_state.initial_input["study_time_per_day"] = response
 
         study_topics = upload_notes(form)
-        print(study_topics)
+        # print(study_topics)
 
         if st.button("✅ Continue to Dashboard", disabled=(study_topics == None)):
             st.session_state.home = True

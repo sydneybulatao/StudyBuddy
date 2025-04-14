@@ -17,9 +17,9 @@ def generate_test_page():
     st.title("Study Buddy")
     st.divider()
 
-    home_button = st.button("Home")
-    if home_button:
-      return
+    # home_button = st.button("Home")
+    # if home_button:
+    #   return
 
     st.header("Practice Test Generator")
     st.write("Build a custom practice test to help you study.")
@@ -32,25 +32,25 @@ def generate_test_page():
     st.subheader("🛠️ Customize Your Test")
     st.write("Subject: " + subject)
     st.session_state.test_input = {}
+    submit = False
 
     with st.form(key='test_form'):
-        st.session_state.test_input["num_questions"] = st.slider("Number of Questions", min_value=5, max_value=20, value=10)
+      st.session_state.test_input["num_questions"] = st.slider("Number of Questions", min_value=5, max_value=20, value=10)
 
-        st.session_state.test_input["question_type"] = st.selectbox(
-            "Question Format",
-            options=["multiple choice", "short answer"]
-        )
+      st.session_state.test_input["question_type"] = st.selectbox(
+          "Question Format",
+          options=["multiple choice", "short answer"]
+      )
 
-        st.session_state.test_input["familiarity"] = st.slider(
-            "How familiar are you with this material?",
-            min_value=1, max_value=5, value=3,
-            help="1 = not at all familiar, 5 = very familiar"
-        )
+      st.session_state.test_input["familiarity"] = st.slider(
+          "How familiar are you with this material?",
+          min_value=1, max_value=5, value=3,
+          help="1 = not at all familiar, 5 = very familiar"
+      )
 
-        st.session_state.test_input_submitted = st.form_submit_button("Generate Practice Test")
+      submit = st.form_submit_button("Generate Practice Test")
 
-    if st.session_state.test_input_submitted:
-      # TODO: form verification - ensure all questions answered or attempted
+    if submit:
       st.success("Form submitted! Starting test generation...")
 
       # Get test input
@@ -160,40 +160,40 @@ def generate_test_page():
       question_pattern = re.compile(r"^Q(\d+): (.+)")
       choice_pattern = re.compile(r"^[A-D]\. (.+)")
       try:
-          answer_key_start = lines.index("--- ANSWER KEY ---")
+        answer_key_start = lines.index("--- ANSWER KEY ---")
       except ValueError:
-          st.error("❌ Could not find the answer key in the output.")
-          st.stop()
+        st.error("❌ Could not find the answer key in the output.")
+        st.stop()
 
       test_data = {}
       current_q = None
 
       for i, line in enumerate(lines):
-          if i > answer_key_start:
-              break
-          q_match = question_pattern.match(line)
-          if q_match:
-              current_q = int(q_match.group(1))
-              test_data[current_q] = {
-                  "question_number": current_q,
-                  "question": q_match.group(2).strip(),
-                  "type": "short answer" if question_type == "short answer" else "multiple choice"
-              }
-              continue
-          if current_q and question_type == "multiple choice":
-              c_match = choice_pattern.match(line)
-              if c_match:
-                  test_data[current_q].setdefault("choices", []).append(c_match.group(1).strip())
+        if i > answer_key_start:
+          break
+        q_match = question_pattern.match(line)
+        if q_match:
+          current_q = int(q_match.group(1))
+          test_data[current_q] = {
+              "question_number": current_q,
+              "question": q_match.group(2).strip(),
+              "type": "short answer" if question_type == "short answer" else "multiple choice"
+          }
+          continue
+        if current_q and question_type == "multiple choice":
+          c_match = choice_pattern.match(line)
+          if c_match:
+            test_data[current_q].setdefault("choices", []).append(c_match.group(1).strip())
 
       # Extract answers
       answers = [l.strip() for l in lines[answer_key_start + 1:] if l.strip()]
       for idx, answer in enumerate(answers, 1):
         if idx in test_data:
-            # Clean answer formatting for both short answer and MC
-            answer_clean = re.sub(r"^Q\d+:\s*", "", answer)
-            if question_type == "multiple choice":
-                answer_clean = re.sub(r"^[A-D]\.\s*", "", answer_clean)
-            test_data[idx]["answer"] = answer_clean.strip()
+          # Clean answer formatting for both short answer and MC
+          answer_clean = re.sub(r"^Q\d+:\s*", "", answer)
+          if question_type == "multiple choice":
+            answer_clean = re.sub(r"^[A-D]\.\s*", "", answer_clean)
+          test_data[idx]["answer"] = answer_clean.strip()
 
 
       # Update system session variables

@@ -7,7 +7,7 @@ from grade_test import grade_test_page
 def take_test_page():
   ### Overall page elements
   if 'responses' not in st.session_state:
-      st.session_state.responses = {}
+    st.session_state.responses = {}
 
   # Grade test once submitted
   if 'test_submitted' in st.session_state and st.session_state.test_submitted:
@@ -20,6 +20,7 @@ def take_test_page():
     subject = st.session_state.subject
 
     st.session_state.test_submitted = False # reset this for new test
+
     st.title("Study Buddy")
     st.divider()
 

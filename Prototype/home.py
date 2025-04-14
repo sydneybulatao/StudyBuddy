@@ -8,9 +8,12 @@ def home_page():
   # GENERATE TEST BUTTON CLICKED
   if 'generate_test' in st.session_state and st.session_state.generate_test:
     generate_test_page()
+
+  #### Commenting the upload notes button out for now since it's not implemented yet! ####
   # UPLOAD NEW NOTES BUTTON CLICKED
-  elif 'upload_notes' in st.session_state and st.session_state.upload_notes:
-    return # put upload notes page here
+  # elif 'upload_notes' in st.session_state and st.session_state.upload_notes:
+  #   return # put upload notes page here
+
   # HOME PAGE
   else:
     # Reset button variables
@@ -26,7 +29,6 @@ def home_page():
     with calendar:
       display_calendar(st.session_state.initial_input.get("course"))
 
-    ### Buttons for naviation
     # Pick greeting based on current time
     current_hour = datetime.now().hour
     if 5 <= current_hour < 12:
@@ -42,6 +44,8 @@ def home_page():
     nav.write("Currently Studying: " + st.session_state.initial_input.get("course"))
     days_left = (st.session_state.initial_input.get("test_date") - date.today()).days
     nav.write("Days Until Test: " + str(days_left))
+
+    ### Buttons for naviation
     take_test = nav.button("Take Practice Test", 
       help="Take an initial assessment, check-in test, or final assessment.")
     upload_notes = nav.button("Upload Notes", 
@@ -52,6 +56,6 @@ def home_page():
       st.session_state.generate_test = True
       st.rerun()
 
-    elif upload_notes:
-      st.session_state.upload_notes = True
-      st.rerun()
+    # elif upload_notes:
+    #   st.session_state.upload_notes = True
+    #   st.rerun()
