@@ -2,7 +2,6 @@
 
 import streamlit as st
 import time
-from grade_test import grade_test_page
 
 def take_test_page():
   ### Overall page elements
@@ -10,8 +9,9 @@ def take_test_page():
     st.session_state.responses = {}
 
   # Grade test once submitted
-  if 'test_submitted' in st.session_state and st.session_state.test_submitted:
-    grade_test_page()
+  if st.session_state.get("test_submitted", False):
+    st.rerun()
+    return
   else:
     # Get back test information
     test_type = st.session_state.test_type
@@ -23,6 +23,18 @@ def take_test_page():
 
     st.title("Study Buddy")
     st.divider()
+
+    # Home button
+    if st.button("Home"):
+      # Reset any test session variables
+      st.session_state.generate_test = False
+      st.session_state.upload_notes = False
+      st.session_state.test_input_submitted = False
+      st.session_state.test_submitted = False
+      st.session_state.responses = {}
+
+      st.session_state.go_home = True
+      st.rerun()
 
     st.header(subject + " " + test_type) 
     if (test_type == "Check-In Test"):

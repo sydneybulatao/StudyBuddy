@@ -177,6 +177,18 @@ def grade_test_page():
     st.title("Study Buddy")
     st.divider()
 
+    # Home button
+    if st.button("Home"):
+      # Reset any test session variables
+      st.session_state.generate_test = False
+      st.session_state.upload_notes = False
+      st.session_state.test_input_submitted = False
+      st.session_state.test_submitted = False
+      st.session_state.responses = {}
+
+      st.session_state.go_home = True
+      st.rerun()
+
     st.header(subject + " " + test_type) 
     if (test_type == "Check-In Test"):
       st.subheader("Topics covered: " + ", ".join(topics)) 

@@ -4,11 +4,11 @@ import time
 import re
 from llmproxy import pdf_upload, generate
 import pprint
-from take_test import take_test_page
 
 def generate_test_page():
-  if 'test_input_submitted' in st.session_state and st.session_state.test_input_submitted:
-    take_test_page() # Move on to taking the test
+  if st.session_state.get("test_input_submitted", False):
+    st.rerun()
+    return
   else:
     # Otherwise, still need to gather input to generate test
     st.session_state.test_input_submitted = False # reset this for new test
@@ -17,9 +17,17 @@ def generate_test_page():
     st.title("Study Buddy")
     st.divider()
 
-    # home_button = st.button("Home")
-    # if home_button:
-    #   return
+    # Home button
+    if st.button("Home"):
+      # Reset any test session variables
+      st.session_state.generate_test = False
+      st.session_state.upload_notes = False
+      st.session_state.test_input_submitted = False
+      st.session_state.test_submitted = False
+      st.session_state.responses = {}
+
+      st.session_state.go_home = True
+      st.rerun()
 
     st.header("Practice Test Generator")
     st.write("Build a custom practice test to help you study.")
@@ -162,7 +170,7 @@ def generate_test_page():
       try:
         answer_key_start = lines.index("--- ANSWER KEY ---")
       except ValueError:
-        st.error("❌ Could not find the answer key in the output.")
+        st.error("Error: Could not generate answer key.")
         st.stop()
 
       test_data = {}

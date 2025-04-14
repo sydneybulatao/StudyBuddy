@@ -20,10 +20,11 @@ You may group related topics together when appropriate based on the available ti
 The student studies once per day.
 
 Date Rules — Very Important:
-Only generate entries for dates between and including the CURRENT DATE and the END DATE.
-Do not generate any entries after the END DATE — the final calendar entry must occur on or before the END DATE.
-The END DATE is allowed to have a calendar entry (such as a final check-in test).
-Any entries generated after the END DATE are invalid.
+1. Only generate entries for dates between and including the CURRENT DATE and the END DATE.
+2. Do not generate any entries after the END DATE — the final calendar entry must occur on or before the END DATE.
+3. The END DATE is allowed to have a calendar entry (such as a final check-in test).
+4. **Ensure that only one calendar entry is generated per day.** If there is already a calendar entry (study or check-in test) for a given date, do not generate another for that date.
+5. Any entries generated after the END DATE are invalid.
 
 STUDY TIME PER DAY is given in hours. If it is less than 1 hour, convert it into minutes for the title (e.g., 0.5 hours → 30 Minutes, 0.75 hours → 45 Minutes, etc.).
 
