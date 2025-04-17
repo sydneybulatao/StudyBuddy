@@ -34,13 +34,14 @@ def home_page():
   ### Overall page elements
   st.title("Study Buddy")
   st.divider()
-  _, calendar, _, nav = st.columns([0.1, 0.7, 0.1, 0.3])
+  _, calendar, _, nav = st.columns([0.1, 0.7, 0.1, 0.4])
 
   ### Study plan calendar
   with calendar:
     display_calendar(st.session_state.initial_input.get("course"))
 
   # Pick greeting based on current time
+  greeting = "Hi there, "
   current_hour = datetime.now().hour
   if 5 <= current_hour < 12:
       greeting = "Good morning, "
@@ -48,25 +49,54 @@ def home_page():
       greeting = "Good afternoon, "
   elif 17 <= current_hour < 21:
       greeting = "Good evening, "
-  else:
-      greeting = "Hi there, "
 
-  nav.subheader(greeting + st.session_state.initial_input.get("name") + "!")
-  nav.write("Currently Studying: " + st.session_state.initial_input.get("course"))
-  days_left = (st.session_state.initial_input.get("test_date") - date.today()).days
-  nav.write("Days Until Test: " + str(days_left))
+  # Navigation to other pages
+  with nav:
+    days_left = str((st.session_state.initial_input["test_date"] - date.today()).days)
+    st.markdown(f"""
+        <div style="background-color: #ECECEC; padding: 20px; border-radius: 10px; width: 100%;">
+          <h3>{greeting}{st.session_state.initial_input["name"]}!</h3>
+          <p>Currently Studying: {st.session_state.initial_input["course"]}</p>
+          <p>Days Until Test: {days_left}</p>
+        </div>
+        <br>
+    """, unsafe_allow_html=True)
 
-  ### Buttons for naviation
-  take_test = nav.button("Take Practice Test", 
-    help="Take an initial assessment, check-in test, or final assessment.")
-  upload_notes = nav.button("Upload Notes", 
-    help="Add additional notes to your studying material.")
+    # Styling for the buttons
+    st.markdown("""
+      <style>
+      button[kind="secondary"] {
+        background-color: #78C18A;
+        color: white;
+        padding: 10px 10px;
+        margin: 8px 0;
+        border: 1px solid #087623;
+        cursor: pointer;
+        width: 200px;
+      }
+      </style>
+      """, unsafe_allow_html=True)
 
-  ## Handle button clicks
-  if take_test:
-    st.session_state.generate_test = True
-    st.rerun()
+    ### Buttons for naviation
+    take_test = st.button("Take Practice Test", 
+      help="Take an initial assessment, check-in test, or final assessment.")
+    upload_notes = st.button("Upload Notes", 
+      help="Add additional notes to your studying material.")
 
-  # elif upload_notes:
-  #   st.session_state.upload_notes = True
-  #   st.rerun()
+    ## Handle button clicks
+    if take_test:
+      st.session_state.generate_test = True
+      st.rerun()
+
+    # elif upload_notes:
+    #   st.session_state.upload_notes = True
+    #   st.rerun()
+
+### FOR TESTING HOME PAGE:
+# st.session_state.initial_input = {
+#   "name": 'Sydney',
+#   "course": 'Computation Theory',
+#   "test_date": date.today(),
+#   "study_time_per_day": 0.5
+# }
+# home_page()
