@@ -3,6 +3,12 @@
 import streamlit as st
 from llmproxy import generate
 
+shorten_instructions = """
+INSTRUCTIONS:
+You will be given text containing the test insights from a student's practice test. 
+Shorten the insights and summarize them into 3 sentences. Feel free to add emojis.
+Do not make anything bold. Remove any ** symbols you see."""
+
 grading_instructions = """
 INSTRUCTIONS:
 You are grading test answers. You will be given the question,
@@ -126,6 +132,17 @@ insights_instructions = {
   "Final Assessment" : final
 }
 
+def shorten_insights(insights):
+  response = generate(model = '4o-mini',
+    system = shorten_instructions,
+    query = "INSIGHTS: " + insights,
+    temperature = 0.0,
+    lastk = 0,
+    session_id = "shorten_insights_session",
+    rag_usage = False)
+
+  return response.get("response", "") if isinstance(response, dict) else response
+
 def grade_question(question, student_answer, solution):
   # Give question to model to grade
   response = generate(model = '4o-mini',
@@ -225,6 +242,12 @@ def grade_test_page():
     st.subheader(str(correct) + " correct out of " + str(total) + " questions")
     st.divider()
 
+    # Save score for home page
+    st.session_state.test_stats = {
+      "score": str(percent),
+      "insights": ""
+    }
+
     # Output scored test
     for q_num in list(questions.keys()):
       mark = graded_questions[q_num]
@@ -237,9 +260,15 @@ def grade_test_page():
       if (mark == "INCORRECT"):
         icon = "✗"  
         color = "red"
+
+      # Check if starred
+      starred = st.session_state.starred_questions.get(q_num, False)
+      star = ""
+      if starred:
+        star = "⭐"
       
       # Display each question and the result with an icon
-      st.markdown(f"<span style='color:{color};'>{icon} {question_text}</span>", unsafe_allow_html=True)
+      st.markdown(f"<span style='color:{color};'>{star} {icon} {question_text}</span>", unsafe_allow_html=True)
       
       #st.write(question_text)
       st.markdown("**Your Answer:** " + student_answer)
@@ -255,3 +284,4 @@ def grade_test_page():
       with st.spinner("Gathering insights from your results..."):
         insights = get_insights(test_type, topics, questions, graded_questions, correct, total)
       st.write(insights)
+      st.session_state.test_stats["insights"] = shorten_insights(insights) # Save insights for home page

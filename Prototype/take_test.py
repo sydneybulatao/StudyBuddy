@@ -39,6 +39,11 @@ def take_test_page():
     st.header(subject + " " + test_type) 
     if (test_type == "Check-In Test"):
       st.subheader("Topics covered: " + ", ".join(topics)) 
+    st.write("Answer all questions—if you're unsure, make your best guess. Star any questions you're uncertain about so you can review them and make sure you understand the answer after submitting. Good luck!")
+
+    # Initialize session state for starred questions
+    if "starred_questions" not in st.session_state:
+        st.session_state.starred_questions = {}
 
     ### Test form
     test =  st.form("Practice Test")
@@ -46,19 +51,36 @@ def take_test_page():
     for q_number in list(questions.keys()):
       question_text = "Q" + str(q_number) + ". " + questions[q_number]["question"]
       q_type = questions[q_number]["type"]
+      question_html = f"<div style='font-size: 20px; font-weight: bold; display: inline-block;'>{question_text}</div>"
+
+      # Display the question with a checkbox to mark as starred
+      starred = st.session_state.starred_questions.get(q_number, False)
+      checkbox_label = "⭐"
+
+      # Checkbox to mark the question as starred
+      if test.checkbox(checkbox_label, value=starred, key=f"star_{q_number}"):
+          st.session_state.starred_questions[q_number] = True
+      else:
+          st.session_state.starred_questions[q_number] = False
+
+      # Display the question with the star button
+      test.markdown(question_html, unsafe_allow_html=True)
 
       # Input field, depending on type 
       if (q_type == "multiple choice"):
         response = test.radio(
-          question_text, 
+          question_text,
           questions[q_number]["choices"],
-          index=None
+          index=None,
+          label_visibility='collapsed'
         )
         st.session_state.responses[q_number] = response
       
       elif (q_type == "short answer"):
-        response = test.text_input(question_text)
+        response = test.text_input(question_text, label_visibility='collapsed')
         st.session_state.responses[q_number] = response
+      
+      test.markdown("<br>", unsafe_allow_html=True)
 
     # Submit button
     # TODO: form verification - ensure all questions answered or attempted
