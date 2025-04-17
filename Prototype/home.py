@@ -3,6 +3,7 @@ from generate_test import generate_test_page
 from take_test import take_test_page
 from grade_test import grade_test_page
 from study_calendar import display_calendar
+from check_in_test import generate_check_in_test_page
 from datetime import datetime, date
 
 def home_page():
@@ -25,6 +26,12 @@ def home_page():
   if st.session_state.get('generate_test', False):
     generate_test_page()
     return
+  
+  # GENERATE CHECK-IN TEST BUTTON CLICKED
+  if st.session_state.get('generate_check_in', False):
+      from check_in_test import generate_check_in_test_page
+      generate_check_in_test_page()
+      return
 
   ### DEFAULT: HOME PAGE
   # Reset any other session state for a clean home experience
@@ -80,12 +87,17 @@ def home_page():
     ### Buttons for naviation
     take_test = st.button("Take Practice Test", 
       help="Take an initial assessment, check-in test, or final assessment.")
+    check_in_test = st.button("Take Check-In Test", 
+      help="Take a focused test on selected topics you've studied so far.")
     upload_notes = st.button("Upload Notes", 
       help="Add additional notes to your studying material.")
 
     ## Handle button clicks
     if take_test:
       st.session_state.generate_test = True
+      st.rerun()
+    elif check_in_test:
+      st.session_state.generate_check_in = True
       st.rerun()
 
     # elif upload_notes:

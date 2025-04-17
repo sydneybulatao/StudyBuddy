@@ -201,6 +201,7 @@ def grade_test_page():
       st.session_state.upload_notes = False
       st.session_state.test_input_submitted = False
       st.session_state.test_submitted = False
+      st.session_state.generate_check_in = False
       st.session_state.responses = {}
 
       st.session_state.go_home = True

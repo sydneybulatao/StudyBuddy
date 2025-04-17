@@ -34,12 +34,25 @@ def generate_summary(rag_context: list) -> Tuple[str, List[str]]:
     prompt = f"""
 You are a helpful study assistant.
 
-Summarize the following notes into clear, coherent study notes.
-Organize the output into:
-1. A short overall summary
-2. A list of 5-10 study topics (bullet points, bold main topics)
+Your task is to generate a clean and structured summary of the following class notes. Your output should help a student identify the **main topics** they need to focus on when studying.
 
-Here are the raw notes:
+INSTRUCTIONS:
+
+1. First, write a brief high-level summary of the document. Use the heading: `### Overall Summary`.
+
+2. Then generate a list of the **main study topics**. Use the heading: `### Study Topics`.
+
+3. Each topic should be written as a single bullet point, bolded using Markdown (`**Topic Name**`). 
+
+4. Do **not** include any sub-bullets or explanations — just the list of bolded topics.
+
+5. Only include topics that are clearly and meaningfully present in the document. Do **not** invent or extrapolate subtopics. 
+
+6. Always avoid redundancy, overly narrow topics, or vague phrasing.
+
+---
+
+Here are the raw notes to process:
 
 {merged_text}
 """
