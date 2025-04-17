@@ -92,6 +92,25 @@ def home_page():
     #   st.session_state.upload_notes = True
     #   st.rerun()
 
+    if ('test_stats' in st.session_state):
+      st.markdown(f"""
+          <div style="background-color: #ECECEC; padding: 20px; border-radius: 10px; width: 100%;">
+            <p style="font-size: 20px;"><strong>Last Test Taken:</strong></p>
+            <p>Score: {st.session_state.test_stats['score']}%</p>
+            <p>{st.session_state.test_stats['insights']}</p>
+          </div>
+          <br>
+      """, unsafe_allow_html=True)
+    else:
+      st.markdown(f"""
+          <div style="background-color: #ECECEC; padding: 20px; border-radius: 10px; width: 100%;">
+            <p style="font-size: 20px;"><strong>Last Test Taken:</strong></p>
+            <p>No results yet...</p>
+            <p>Take the initial assessment to assess your current knowledge!</p>
+          </div>
+          <br>
+      """, unsafe_allow_html=True)
+
 ### FOR TESTING HOME PAGE:
 # st.session_state.initial_input = {
 #   "name": 'Sydney',
@@ -99,4 +118,5 @@ def home_page():
 #   "test_date": date.today(),
 #   "study_time_per_day": 0.5
 # }
+# st.session_state.session_id = st.session_state.initial_input.get("name") + st.session_state.initial_input.get("course")
 # home_page()
