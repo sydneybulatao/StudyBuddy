@@ -2,6 +2,7 @@
 
 import streamlit as st
 from llmproxy import generate
+import re
 
 shorten_instructions = """
 INSTRUCTIONS:
@@ -340,3 +341,28 @@ def grade_test_page():
         insights = get_insights(test_type, topics, questions, graded_questions, correct, total)
       st.write(insights)
       st.session_state.test_stats["insights"] = shorten_insights(insights) # Save insights for home page
+
+      # If diagnostic test, format the insights for the study plan generation
+      if (test_type == "Diagnostic Test"):
+        statuses = ["Revisit 🔴", "Refine 🟡", "Mastered 🟢"]
+
+        # Use regex to match lines ending in one of those
+        pattern = r"^.*: (Revisit 🔴|Refine 🟡|Mastered 🟢)$"
+        topics = [line.strip() for line in insights.strip().split('\n') if re.match(pattern, line.strip())]
+
+        # Categorize by status
+        categorized = {"Revisit 🔴": [], "Refine 🟡": [], "Mastered 🟢": []}
+        for line in topics:
+            for status in statuses:
+                if line.endswith(status):
+                    categorized[status].append(line)
+                    break
+
+        # Build output string
+        output_str = "CATEGORIZED TOPICS: "
+        for status, items in categorized.items():
+            output_str += f"\n{status}:\n"
+            for item in items:
+                output_str += f" - {item}\n"
+        st.session_state.diagnostic_results = categorized
+        st.session_state.diagnostic_results_str = output_str
