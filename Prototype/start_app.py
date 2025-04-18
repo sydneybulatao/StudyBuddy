@@ -7,6 +7,7 @@ import os
 import re
 from string import Template
 from FileUpload import upload_file_to_rag, summarize_uploaded_file
+from diagnostic_test import run_diagnostic_test
 from home import home_page
 
 def initial_input():
@@ -44,9 +45,15 @@ def initial_input():
         study_topics = upload_notes(form)
         # print(study_topics)
 
-        if st.button("✅ Continue to Dashboard", disabled=(study_topics == None)):
+        # trigger diagnostic test
+        if st.button("✅ Start Diagnostic Test", disabled=(study_topics == None)):
+            st.session_state.generate_diagnostic = True
             st.session_state.home = True
             st.rerun()
+
+#        if st.button("✅ Continue to Dashboard", disabled=(study_topics == None)):
+#            st.session_state.home = True
+#            st.rerun()
 
 def upload_notes(form):
     response = form.file_uploader(

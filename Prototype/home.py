@@ -4,6 +4,7 @@ from take_test import take_test_page
 from grade_test import grade_test_page
 from study_calendar import display_calendar
 from check_in_test import generate_check_in_test_page
+from diagnostic_test import run_diagnostic_test
 from datetime import datetime, date
 
 def home_page():
@@ -11,6 +12,11 @@ def home_page():
   if st.session_state.get("go_home", False):
     st.session_state.go_home = False  # Reset the flag
     # Continue into home page
+
+  # --- ROUTE TO DIAGNOSTIC TEST PAGE ---
+  if st.session_state.get("generate_diagnostic", False):
+    run_diagnostic_test()
+    return
 
   # TEST SUBMITTED, GRADING
   if st.session_state.get('test_submitted', False):
@@ -32,6 +38,7 @@ def home_page():
       from check_in_test import generate_check_in_test_page
       generate_check_in_test_page()
       return
+  
 
   ### DEFAULT: HOME PAGE
   # Reset any other session state for a clean home experience
