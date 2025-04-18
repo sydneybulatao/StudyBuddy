@@ -46,14 +46,10 @@ def initial_input():
         # print(study_topics)
 
         # trigger diagnostic test
-        if st.button("✅ Start Diagnostic Test", disabled=(study_topics == None)):
+        if st.button("Start Diagnostic Test", disabled=(study_topics == None)):
             st.session_state.generate_diagnostic = True
             st.session_state.home = True
             st.rerun()
-
-#        if st.button("✅ Continue to Dashboard", disabled=(study_topics == None)):
-#            st.session_state.home = True
-#            st.rerun()
 
 def upload_notes(form):
     response = form.file_uploader(
@@ -63,7 +59,7 @@ def upload_notes(form):
     )
     st.session_state.initial_input["notes"] = response
 
-    submit = form.form_submit_button("Generate Study Plan!")
+    submit = form.form_submit_button("Submit Study Preferences")
 
     ### Process data once submitted
     if submit:
@@ -90,8 +86,6 @@ def upload_notes(form):
                 with st.spinner(f"🧠 Summarizing {uploaded_file.name}..."):
                     summary_text, study_topics = summarize_uploaded_file(file_name)
 
-                st.success(f"✅ Done processing {uploaded_file.name}!")
-
                 # 📄 Review Summaries
                 with st.expander(f"📄 Review Summary for {uploaded_file.name}"):
                     parts = summary_text.split('###')
@@ -110,8 +104,6 @@ def upload_notes(form):
                 # Update Progress
                 progress = (idx + 1) / total_files
                 progress_bar.progress(progress)
-
-            st.success("🎉 All files uploaded and summarized!")
 
         # Stop Here and Review
         st.info("📚 Please review your summaries carefully before moving forward.")
@@ -134,9 +126,9 @@ def start_page():
             steps_html = """
             <div style='text-align: center;'>
                 <h2>How It Works:</h2>
-                <h4>⭒ Input your study preferences & course notes to build a custom study plan</h4>
-                <h4>⭒ Use your study plan to break down studying into manageable increments each day</h4>
-                <h4>⭒ Check your knowledge throughout the process with check-in assessments</h4>
+                <h4>⭒ Input your study preferences & course notes, then take a quick diagnostic test to spot any tricky topics </h4>
+                <h4>⭒ StudyBuddy puts it all together to create a personalized study plan that focuses on what you need most </h4>
+                <h4>⭒ Follow your plan step by step, with manageable study sessions and helpful check-ins to keep you on track and feeling confident </h4>
                 <br>
             </div>
             """

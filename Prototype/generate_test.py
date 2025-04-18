@@ -29,11 +29,9 @@ def generate_test_page():
       st.session_state.go_home = True
       st.rerun()
 
-    st.header("Practice Test Generator")
-    st.write("Build a custom practice test to help you study.")
-
-    # --- Upload PDFs ---
-    #uploaded_files = st.file_uploader("📚 Upload your PDF study materials", type="pdf", accept_multiple_files=True)
+    st.header("Overall Assessment Generator")
+    st.write("Build a custom practice test, based on all study topics.")
+    st.write("We recommend taking this test at the end of your studying journey to assess your overall knowledge.")
 
     # --- Test Configuration ---
     subject = st.session_state.initial_input.get("course")
@@ -68,32 +66,7 @@ def generate_test_page():
 
       SESSION_ID = st.session_state.session_id
 
-      # Create temp dir to save uploaded PDFs
-      # TEMP_DIR = "temp_uploads"
-      # os.makedirs(TEMP_DIR, exist_ok=True)
-
-      # uploaded_filenames = []
-
-      # # Upload PDFs to RAG
-      # for uploaded_file in uploaded_files:
-      #     file_path = os.path.join(TEMP_DIR, uploaded_file.name)
-      #     with open(file_path, "wb") as f:
-      #         f.write(uploaded_file.getbuffer())
-      #     uploaded_filenames.append(uploaded_file.name)
-          
-      #     with st.spinner(f"Uploading {uploaded_file.name} to RAG..."):
-      #         response = pdf_upload(
-      #             path=file_path,
-      #             strategy='smart',
-      #             session_id=SESSION_ID
-      #         )
-      #         st.success(f"Uploaded {uploaded_file.name}")
-
-      # Wait a bit to ensure RAG context is indexed
-      # st.info("Indexing uploaded documents...")
-      # time.sleep(8)
-
-      st.subheader("📄 Generating Your Practice Test...")
+      st.subheader("📄 Generating Your Overall Assessment...")
       st.info("This may take a moment...")
 
       # Build system prompt
@@ -207,8 +180,8 @@ def generate_test_page():
       # Update system session variables
       # Test information
       st.session_state.questions = test_data
-      st.session_state.test_type = "Initial Assessment"
-      st.session_state.topics = ["All Topics"]
+      st.session_state.test_type = "Overall Assessment"
+      st.session_state.topics = st.session_state.all_topics
       st.session_state.subject = subject
 
       st.session_state.test_input_submitted = True

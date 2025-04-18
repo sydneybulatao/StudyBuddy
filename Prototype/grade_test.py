@@ -62,7 +62,7 @@ what is listed here. Make the topic names and keywords bold in all text that is 
 initial = """
 INSTRUCTIONS:
 You are providing insights for a student to guide their studying, based on how 
-well they performed on an initial test. The student may not know much about the
+well they performed on an initial diagnostic test. The student may not know much about the
 topics currently, so it is important to be supportive. This test is on all 
 topics that the student must study. 
 For each topic, you will provide a keyword that lets the student know how well
@@ -73,6 +73,9 @@ them for topics they did do well on. Use a friendly, encouraging, and supportive
 Use emojis in your blurb to make it friendly! Remind them that they don't need to 
 know everything right now. Their studying journey is just beginning and with 
 their study plan they'll make progress in no time!
+Let the student know that based on their results from this diagnostic test, 
+the study plan will focus on the topics that they struggled with to help them be
+confident and prepared for their test. 
 
 KEYWORD CRITERIA:
 Revisit 🔴: The student got all "INCORRECT" for questions pertaining to the topic.
@@ -94,15 +97,14 @@ what is listed here. Make the topic names and keywords bold in all text that is 
 <2-3 sentence blurb that lets the student know how they did on the test and identifies areas to study further>
 """
 
-final = """
+overall = """
 INSTRUCTIONS:
 You are providing insights for a student to guide their studying, based on how 
-well they performed on an final test. The student may not have much time left
-before they take the actual test. This test is on all topics that the student must study. 
-For each topic, you will provide a keyword that lets the student know how well
+well they performed on an test. This test is on all topics that the student must study. 
+For each topic, you will provide a keyword that lets the student know how 
 they did on the questions pertaining to that topic. In addition, you will output
 a short blurb of 2-3 sentences that lets the student know how they did on the test, 
-encourages them to further study topics that they didn't do well on, and commends
+points them to further study topics that they didn't do well on, and commends
 them for topics they did do well on. Use a friendly, encouraging, and supportive tone. 
 Use emojis in your blurb to make it friendly!
 
@@ -128,8 +130,8 @@ what is listed here. Make the topic names and keywords bold in all text that is 
 
 insights_instructions = {
   "Check-In Test" : check_in,
-  "Initial Assessment" : initial,
-  "Final Assessment" : final
+  "Diagnostic Test" : initial,
+  "Overall Assessment" : overall
 }
 
 def shorten_insights(insights):
@@ -195,19 +197,62 @@ def grade_test_page():
     st.divider()
 
     # Home button
-    if st.button("Home"):
-      # Reset any test session variables
-      st.session_state.generate_test = False
-      st.session_state.upload_notes = False
-      st.session_state.test_input_submitted = False
-      st.session_state.test_submitted = False
-      st.session_state.generate_check_in = False
-      st.session_state.responses = {}
+    if (test_type != "Diagnostic Test"):
+      if st.button("Home"):
+        # Reset any test session variables
+        st.session_state.generate_test = False
+        st.session_state.upload_notes = False
+        st.session_state.test_input_submitted = False
+        st.session_state.test_submitted = False
+        st.session_state.generate_check_in = False
+        st.session_state.responses = {}
 
-      st.session_state.go_home = True
-      st.rerun()
+        st.session_state.go_home = True
+        st.rerun()
 
-    st.header(subject + " " + test_type) 
+      st.header(subject + " " + test_type) 
+
+    if test_type == "Diagnostic Test":
+      col1, col2 = st.columns([2,1])
+      st.session_state.header_col = col1
+      with col2:
+        st.markdown("""
+            <div style="background-color: #ECECEC; padding: 20px; border-radius: 10px; width: 100%;">
+                <p style="font-size: 20px; margin-top: 0;">Once you finish reviewing your results, generate your customized study plan!</p>
+            </div>
+            <br>
+        """, unsafe_allow_html=True)
+
+        # Styling for the button
+        st.markdown("""
+          <style>
+          button[kind="secondary"] {
+            background-color: #78C18A;
+            color: white;
+            padding: 10px 10px;
+            margin: 8px 0;
+            border: 1px solid #087623;
+            cursor: pointer;
+            width: 200px;
+          }
+          </style>
+          """, unsafe_allow_html=True)
+          
+        if st.button("Generate Study Plan", use_container_width=True):
+            # Reset any test session variables
+            st.session_state.generate_test = False
+            st.session_state.upload_notes = False
+            st.session_state.test_input_submitted = False
+            st.session_state.test_submitted = False
+            st.session_state.generate_check_in = False
+            st.session_state.responses = {}
+
+            st.session_state.go_home = True
+            st.rerun()
+      
+      with col1:
+        st.header(subject + " " + test_type) 
+
     if (test_type == "Check-In Test"):
       st.subheader("Topics covered: " + ", ".join(topics)) 
 
@@ -229,9 +274,12 @@ def grade_test_page():
             graded_questions[q_number] = "INCORRECT" 
 
         else:
-          graded_questions[q_number] = grade_question(q_info["question"],
-                                                      responses[q_number],
-                                                      q_info["answer"])
+          if (responses[q_number] == ""):
+            graded_questions[q_number] = "INCORRECT"
+          else:
+            graded_questions[q_number] = grade_question(q_info["question"],
+                                                        responses[q_number],
+                                                        q_info["answer"])
 
         # Update progress bar
         my_bar.progress(q_number / num_questions, text=progress_text)
@@ -239,8 +287,14 @@ def grade_test_page():
 
     # Output stats and insights
     percent, correct, total = calculate_grade(graded_questions)
-    st.subheader("Score: " + str(percent) + "%")
-    st.subheader(str(correct) + " correct out of " + str(total) + " questions")
+
+    if (test_type == "Diagnostic Test"):
+      with st.session_state.header_col:
+        st.subheader("Score: " + str(percent) + "%")
+        st.subheader(str(correct) + " correct out of " + str(total) + " questions")
+    else:
+      st.subheader("Score: " + str(percent) + "%")
+      st.subheader(str(correct) + " correct out of " + str(total) + " questions")
     st.divider()
 
     # Save score for home page

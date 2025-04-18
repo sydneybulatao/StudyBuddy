@@ -92,12 +92,12 @@ def home_page():
       """, unsafe_allow_html=True)
 
     ### Buttons for naviation
-    take_test = st.button("Take Practice Test", 
-      help="Take an initial assessment, check-in test, or final assessment.")
     check_in_test = st.button("Take Check-In Test", 
       help="Take a focused test on selected topics you've studied so far.")
-    upload_notes = st.button("Upload Notes", 
-      help="Add additional notes to your studying material.")
+    take_test = st.button("Take Overall Assessment", 
+      help="Take a test on all topics.")
+    # upload_notes = st.button("Upload Notes", 
+    #   help="Add additional notes to your studying material.")
 
     ## Handle button clicks
     if take_test:

@@ -17,67 +17,15 @@ def run_diagnostic_test():
         st.title("Study Buddy")
         st.divider()
 
-        # Home button
-        if st.button("Home"):
-            # Reset any test session variables
-            st.session_state.generate_test = False
-            st.session_state.upload_notes = False
-            st.session_state.test_input_submitted = False
-            st.session_state.test_submitted = False
-            st.session_state.generate_check_in = False
-            st.session_state.responses = {}
-            st.session_state.go_home = True
-            st.rerun()
-
-        st.header("Check-In Test Generator")
-        st.write("Build a custom practice test focused on specific subtopics to help you study.")
-
-        # --- Upload PDFs ---
-        # uploaded_files = st.file_uploader("📚 Upload your PDF study materials", type="pdf", accept_multiple_files=True)
-
         # --- Test Configuration ---
         subject = st.session_state.initial_input.get("course")
         selected_topics = st.session_state.all_study_topics
         question_type = "short answer"
 
-        st.subheader("🧠 Diagnostic Assessment")
-        st.write(f"Creating a diagnostic test for: **{subject}**")
-        st.write("""
-            Welcome to your personalized diagnostic test!  
-            This short assessment is designed to evaluate your familiarity with the key topics from your uploaded notes.  
-
-            Please answer each question to the best of your ability. Your results will help tailor your future study plan to focus on the areas where you need the most support.
-            """)
-
+        st.header(f"{subject} Diagnostic Test")
+        st.subheader("📄 Generating Diagnostic Test...")
 
         SESSION_ID = st.session_state.session_id
-
-        # Create temp dir to save uploaded PDFs
-        # TEMP_DIR = "temp_uploads"
-        # os.makedirs(TEMP_DIR, exist_ok=True)
-
-        # uploaded_filenames = []
-
-        # # Upload PDFs to RAG
-        # for uploaded_file in uploaded_files:
-        #     file_path = os.path.join(TEMP_DIR, uploaded_file.name)
-        #     with open(file_path, "wb") as f:
-        #         f.write(uploaded_file.getbuffer())
-        #     uploaded_filenames.append(uploaded_file.name
-
-        #     with st.spinner(f"Uploading {uploaded_file.name} to RAG..."):
-        #         response = pdf_upload(
-        #             path=file_path,
-        #             strategy='smart',
-        #             session_id=SESSION_ID
-        #         )
-        #         st.success(f"Uploaded {uploaded_file.name}")
-
-        # Wait a bit to ensure RAG context is indexed
-        # st.info("Indexing uploaded documents...")
-        # time.sleep(8)
-
-        st.subheader("📄 Generating Your Practice Test...")
         st.info("This may take a moment...")
 
         # Build system prompt
@@ -135,7 +83,6 @@ def run_diagnostic_test():
         )
 
         raw_output = response.get("response", "") if isinstance(response, dict) else response
-        st.success("✅ Test generated!")
 
         # --- Parse output ---
         lines = raw_output.splitlines()
