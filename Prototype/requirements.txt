@@ -6,5 +6,5 @@ pprint
 tempfile
 typing
 string
-streamlit_calendar
+streamlit-calendar
 datetime
