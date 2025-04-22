@@ -20,17 +20,20 @@ def summarize_uploaded_file(file_name: str) -> Tuple[str, List[str]]:
     return generate_summary(rag_context)
 
 def generate_summary(rag_context: list) -> Tuple[str, List[str]]:
-    """Generate a clean, coherent LLM-based summary and extract study topics."""
+    """Generate a clean, structured summary and extract study topics with fallback safety."""
     if not rag_context:
         return "No context available to summarize.", []
 
-    # Step 1: Merge all chunks into one big context
+    # Step 1: Merge context safely
     merged_text = ""
     for collection in rag_context:
-        merged_text += collection.get('doc_summary', '') + "\n\n"
-        merged_text += "\n".join(collection.get('chunks', [])) + "\n\n"
+        if isinstance(collection, dict):
+            merged_text += collection.get('doc_summary', '') + "\n\n"
+            merged_text += "\n".join(collection.get('chunks', [])) + "\n\n"
+        else:
+            merged_text += str(collection) + "\n\n"
 
-    # Step 2: Ask the LLM to summarize the whole text properly
+    # Step 2: Ask LLM to summarize
     prompt = f"""
 You are a helpful study assistant.
 
@@ -57,7 +60,6 @@ Here are the raw notes to process:
 {merged_text}
 """
 
-    # Step 3: Generate clean summary
     response = generate(
         model="4o-mini",
         system="Study Summarizer",
@@ -68,9 +70,9 @@ Here are the raw notes to process:
         rag_usage=False
     )
 
-    summary_text = response['response']
+    summary_text = response['response'] if isinstance(response, dict) else str(response)
 
-    # Step 4: Extract only large bold study topics
+    # Step 3: Extract bolded study topics
     study_topics = []
     lines = summary_text.splitlines()
     collecting_topics = False
@@ -88,7 +90,7 @@ Here are the raw notes to process:
                     if clean_topic:
                         study_topics.append(clean_topic)
             elif line.startswith("###"):
-                break  # Stop if next heading starts
+                break
 
     return summary_text, study_topics
 

@@ -184,7 +184,7 @@ def generate_check_in_test_page():
       try:
         answer_key_start = lines.index("--- ANSWER KEY ---")
       except ValueError:
-        st.error("Error: Could not generate answer key.")
+        st.error("Error: .")
         st.stop()
 
       test_data = {}
