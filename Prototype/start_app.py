@@ -40,7 +40,7 @@ def review_topics(summary_text, topics):
     print(st.session_state.all_study_topics)
 
   # Instructions
-  st.markdown("**Once you are satisfied with topics, close window and continue to diagnostic test.**")
+  st.markdown("**Once you are satisfied with your study topics, close this window and continue to diagnostic test.**")
 
 def initial_input():
     if 'home' in st.session_state and st.session_state.home:
@@ -121,18 +121,6 @@ def upload_notes(form):
                 with st.spinner(f"🧠 Summarizing {uploaded_file.name}..."):
                     summary_text, study_topics = summarize_uploaded_file(file_name)
 
-                # # Review Summaries
-                # with st.expander(f"📄 Review Summary for {uploaded_file.name}"):
-                #     parts = summary_text.split('###')
-                #     for part in parts:
-                #         part = part.strip()
-                #         if part.startswith("Overall Summary"):
-                #             st.subheader("📚 Overall Summary")
-                #             st.write(part.replace("Overall Summary", "").strip())
-                #         elif part.startswith("Study Topics"):
-                #             st.subheader("📝 Study Topics")
-                #             st.markdown(part.replace("Study Topics", "").strip())
-
                 # Add extracted study topics to master list
                 st.session_state.all_study_topics.extend(study_topics)
 
@@ -141,7 +129,6 @@ def upload_notes(form):
                 progress_bar.progress(progress)
 
         # Stop Here and Review
-        # st.info("📚 Please review your summaries carefully before moving forward.")
         st.session_state.new_topics = []
         review_topics(summary_text, study_topics)
 
