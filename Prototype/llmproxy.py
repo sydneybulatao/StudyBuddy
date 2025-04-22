@@ -1,12 +1,17 @@
 import json
 import requests
+import streamlit as st
 
 # Read proxy config from config.json
-with open('config.json', 'r') as file:
-    config = json.load(file)
+# with open('config.json', 'r') as file:
+#     config = json.load(file)
 
-end_point = config['endPoint']
-api_key = config['apiKey']
+# end_point = config['endPoint']
+# api_key = config['apiKey']
+
+# Read in secrets 
+end_point = st.secrets["endPoint"]
+api_key = st.secrets["apiKey"]
 
 def generate(
 	model: str,
