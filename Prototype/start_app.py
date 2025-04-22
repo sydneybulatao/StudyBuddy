@@ -10,6 +10,38 @@ from FileUpload import upload_file_to_rag, summarize_uploaded_file
 from diagnostic_test import run_diagnostic_test
 from home import home_page
 
+@st.dialog("Review Topics", width='large')
+def review_topics(summary_text, topics):
+  # Display summary
+  parts = summary_text.split('###')
+  for part in parts:
+    part = part.strip()
+    if part.startswith("Overall Summary"):
+      st.subheader("Overall Summary")
+      st.write(part.replace("Overall Summary", "").strip())
+
+  # Display topics
+  st.subheader("Study Topics")
+  for topic in topics:
+    st.markdown("- " + topic)
+
+  # Option to add topics
+  new_topic = st.text_input("Add additional topics:")
+  add_button = st.button("Add")
+
+  if add_button:
+    new_topic = new_topic.lower().title()
+    st.session_state.new_topics.append(new_topic)
+    st.session_state.all_study_topics.append(new_topic)
+    for topic in st.session_state.new_topics:
+      st.markdown("- " + topic)
+  
+    print("new topics added:")
+    print(st.session_state.all_study_topics)
+
+  # Instructions
+  st.markdown("**Once you are satisfied with topics, close window and continue to diagnostic test.**")
+
 def initial_input():
     if 'home' in st.session_state and st.session_state.home:
         home_page()
@@ -43,7 +75,10 @@ def initial_input():
         st.session_state.initial_input["study_time_per_day"] = response
 
         study_topics = upload_notes(form)
-        # print(study_topics)
+
+        if study_topics != None:
+          print("Final topics:")
+          print(st.session_state.all_study_topics)
 
         # trigger diagnostic test
         if st.button("Start Diagnostic Test", disabled=(study_topics == None)):
@@ -86,17 +121,17 @@ def upload_notes(form):
                 with st.spinner(f"🧠 Summarizing {uploaded_file.name}..."):
                     summary_text, study_topics = summarize_uploaded_file(file_name)
 
-                # 📄 Review Summaries
-                with st.expander(f"📄 Review Summary for {uploaded_file.name}"):
-                    parts = summary_text.split('###')
-                    for part in parts:
-                        part = part.strip()
-                        if part.startswith("Overall Summary"):
-                            st.subheader("📚 Overall Summary")
-                            st.write(part.replace("Overall Summary", "").strip())
-                        elif part.startswith("Study Topics"):
-                            st.subheader("📝 Study Topics")
-                            st.markdown(part.replace("Study Topics", "").strip())
+                # # Review Summaries
+                # with st.expander(f"📄 Review Summary for {uploaded_file.name}"):
+                #     parts = summary_text.split('###')
+                #     for part in parts:
+                #         part = part.strip()
+                #         if part.startswith("Overall Summary"):
+                #             st.subheader("📚 Overall Summary")
+                #             st.write(part.replace("Overall Summary", "").strip())
+                #         elif part.startswith("Study Topics"):
+                #             st.subheader("📝 Study Topics")
+                #             st.markdown(part.replace("Study Topics", "").strip())
 
                 # Add extracted study topics to master list
                 st.session_state.all_study_topics.extend(study_topics)
@@ -106,7 +141,9 @@ def upload_notes(form):
                 progress_bar.progress(progress)
 
         # Stop Here and Review
-        st.info("📚 Please review your summaries carefully before moving forward.")
+        # st.info("📚 Please review your summaries carefully before moving forward.")
+        st.session_state.new_topics = []
+        review_topics(summary_text, study_topics)
 
         return st.session_state.all_study_topics
 
