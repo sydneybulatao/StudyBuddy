@@ -17,6 +17,8 @@ def summarize_uploaded_file(file_name: str) -> Tuple[str, List[str]]:
         rag_k=3
     )
 
+    print(rag_context)
+
     return generate_summary(rag_context)
 
 def generate_summary(rag_context: list) -> Tuple[str, List[str]]:
