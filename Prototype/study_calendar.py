@@ -36,7 +36,9 @@ Date Rules — Very Important:
 2. Do not generate any entries after the END DATE — the final calendar entry must occur on or before the END DATE.
 3. The END DATE is allowed to have a calendar entry (such as a final check-in test).
 4. **Ensure that only one calendar entry is generated per day.** If there is already a calendar entry (study or check-in test) for a given date, do not generate another for that date.
-5. Any entries generated after the END DATE are invalid.
+5. Any entries generated after the END DATE are invalid and must be avoided completely. 
+   This includes even one extra day — the final date allowed for any entry is the END DATE itself.
+   Violating this rule means the plan is unusable.
 6. You must generate an entry for each day within the range of CURRENT DATE and END DATE.
 
 STUDY TIME PER DAY is given in hours. If it is less than 1 hour, convert it into minutes for the title (e.g., 0.5 hours → 30 Minutes, 0.75 hours → 45 Minutes, etc.).
@@ -89,6 +91,8 @@ START: 2025/04/19
 TYPE: check_in  
 TITLE: Check-In Test: ALL, ANY  
 START: 2025/04/20
+
+‼️ FINAL REMINDER: You must not generate any entries for dates beyond the END DATE. Double-check your plan before finalizing.
 """
 
 note_instructions = """
