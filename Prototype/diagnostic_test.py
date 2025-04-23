@@ -20,7 +20,7 @@ def run_diagnostic_test():
         # --- Test Configuration ---
         subject = st.session_state.initial_input.get("course")
         selected_topics = st.session_state.all_study_topics
-        question_type = "short answer"
+        question_type = "multiple choice"
 
         st.header(f"{subject} Diagnostic Test")
         st.subheader("📄 Generating Diagnostic Test...")
@@ -35,7 +35,7 @@ def run_diagnostic_test():
         Your job is to generate a **Diagnostic Practice Test** that:
         - Tests the student's understanding across ALL of the following subtopics: {', '.join(selected_topics)}
         - Includes AT LEAST one question for each subtopic
-        - Uses ONLY this question format: "short answer"
+        - Uses ONLY this question format: "multiple choice"
         - Allows question difficulty to vary naturally — some should be basic, some should require deeper reasoning
         - Keeps the total number of questions reasonable, based on topic count (typically 1–2 per topic)
 
@@ -49,9 +49,13 @@ def run_diagnostic_test():
         2. Output the line: --- QUESTIONS ---
         3. Then, for each question:
 
-        - If the format is "short answer":
-            Q1: <question text>
-            Topic: <subtopic this question tests>
+      - If the format is "multiple choice":
+        Q1: <question text>
+        A. <option A>
+        B. <option B>
+        C. <option C>
+        D. <option D>
+        Topic: <subtopic this question tests>
 
         4. Leave one blank line between each question.
         5. Then output the line: --- ANSWER KEY ---
@@ -62,6 +66,10 @@ def run_diagnostic_test():
 
         Example:
         Q3: What philosopher argued that punishment restores moral balance?
+        A. Jeremy Bentham
+        B. John Rawls
+        C. Immanuel Kant
+        D. H.L.A. Hart
         Topic: Retributive Justice
 
         Answer:
