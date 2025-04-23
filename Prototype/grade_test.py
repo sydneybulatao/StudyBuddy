@@ -147,6 +147,10 @@ def shorten_insights(insights):
   return response.get("response", "") if isinstance(response, dict) else response
 
 def grade_question(question, student_answer, solution):
+  # Check if answer is blank
+  if (student_answer == None):
+    student_answer = ""
+
   # Give question to model to grade
   response = generate(model = '4o-mini',
     system = grading_instructions,
@@ -327,6 +331,9 @@ def grade_test_page():
       st.markdown(f"<span style='color:{color};'>{star} {icon} {question_text}</span>", unsafe_allow_html=True)
       
       #st.write(question_text)
+      if (student_answer == None):
+        student_answer = ""
+        
       st.markdown("**Your Answer:** " + student_answer)
 
       if (mark == "INCORRECT"):
