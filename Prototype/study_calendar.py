@@ -316,7 +316,7 @@ def display_calendar(course_name):
               },
               {
                   "id": "assessment",
-                  "title": f"📝 Final Assessment: {course_name} ",
+                  "title": f"📝 Final Assessment: {course_name}",
                   "start": final_assessment_day.strftime("%Y-%m-%d"),
                   "allDay": True,
                   "backgroundColor": "#78C18A",
