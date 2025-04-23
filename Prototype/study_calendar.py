@@ -167,7 +167,7 @@ def generate_study_plan():
 
     return response
 
-def get_study_plan_and_parse(retry_count=0, end):
+def get_study_plan_and_parse(end, retry_count=0):
   try:
     study_plan = generate_study_plan()
 
@@ -210,7 +210,7 @@ def get_study_plan_and_parse(retry_count=0, end):
   except Exception as e:
     # Retry logic with a maximum of 3 retries
     if retry_count < 3:
-      return get_study_plan_and_parse(retry_count + 1)
+      return get_study_plan_and_parse(end, retry_count + 1)
     else:
       # Show the error after 3 retries
       st.error("Error: Incorrect study plan format generated.")
