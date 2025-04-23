@@ -22,6 +22,10 @@ As the student studies topics, they should also complete check-in tests after co
 
 Study Plan Rules:
 - Every topic provided must appear in **at least one study entry**. Do not skip any topics.
+- If there are more topics than available days, **combine multiple related topics into one study entry**.
+  - Prioritize stacking topics in the same category (e.g., two Revisit 🔴 topics together).
+  - You may combine 2–3 topics per day if needed.
+  - Try to balance workload sensibly so that the student is not overwhelmed.
 - Prioritize topics in this order: Revisit 🔴 → Refine 🟡 → Mastered 🟢.
 - Topics in the Revisit 🔴 category should appear multiple times (2–3 study sessions each depending on available days).
 - Topics in the Refine 🟡 category may also appear more than once if time allows.
@@ -92,6 +96,39 @@ START: 2025/04/19
 TYPE: check_in  
 TITLE: Check-In Test: ALL, ANY  
 START: 2025/04/20
+
+INPUT:
+COURSE NAME: Software Engineering Principles
+TOPICS:
+Revisit 🔴: Requirements Analysis, Design Patterns, UML, Agile Methodologies
+Refine 🟡: Testing Strategies, Version Control, CI/CD
+Mastered 🟢: Deployment, DevOps Basics, Documentation
+STUDY TIME PER DAY: 1 hour
+END DATE: 4/27/2025
+CURRENT DATE: 4/21/2025
+
+OUTPUT:
+TYPE: study
+TITLE: Study 1 Hour: Requirements Analysis, Design Patterns
+START: 2025/04/21
+TYPE: study
+TITLE: Study 1 Hour: UML, Agile Methodologies
+START: 2025/04/22
+TYPE: check_in
+TITLE: Check-In Test: Requirements Analysis, Design Patterns, UML, Agile Methodologies
+START: 2025/04/23
+TYPE: study
+TITLE: Study 1 Hour: Testing Strategies, Version Control
+START: 2025/04/24
+TYPE: study
+TITLE: Study 1 Hour: CI/CD, Deployment
+START: 2025/04/25
+TYPE: check_in
+TITLE: Check-In Test: Testing Strategies, Version Control, CI/CD
+START: 2025/04/26
+TYPE: study
+TITLE: Study 1 Hour: DevOps Basics, Documentation
+START: 2025/04/27
 
 
 ‼️ FINAL REMINDER:
