@@ -185,6 +185,7 @@ def get_study_plan_and_parse(end, retry_count=0):
       end_date = datetime.datetime.strptime(end, "%Y-%m-%d").date()
 
       if start_date > end_date:
+        print(f"Start date {start} is beyond threshold {end}")
         raise ValueError(f"Start date {start} is beyond threshold {end}")
       
       # Ensure correct event creation with type and color
@@ -208,8 +209,8 @@ def get_study_plan_and_parse(end, retry_count=0):
     return entries
 
   except Exception as e:
-    # Retry logic with a maximum of 3 retries
-    if retry_count < 3:
+    # Retry logic with a maximum of 5 retries
+    if retry_count < 5:
       return get_study_plan_and_parse(end, retry_count + 1)
     else:
       # Show the error after 3 retries
