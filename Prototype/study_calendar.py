@@ -256,6 +256,9 @@ def get_study_plan_and_parse(end, retry_count=0):
           "color": color
       })
 
+    if (entries == []):
+      raise ValueError(f"Empty entries list")
+
     return entries
 
   except Exception as e:
