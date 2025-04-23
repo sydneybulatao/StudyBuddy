@@ -21,6 +21,7 @@ Your task is to break up the topics and generate a calendar-based study plan sta
 As the student studies topics, they should also complete check-in tests after completing one or more related topics.
 
 Study Plan Rules:
+- Every topic provided must appear in **at least one study entry**. Do not skip any topics.
 - Prioritize topics in this order: Revisit 🔴 → Refine 🟡 → Mastered 🟢.
 - Topics in the Revisit 🔴 category should appear multiple times (2–3 study sessions each depending on available days).
 - Topics in the Refine 🟡 category may also appear more than once if time allows.
@@ -92,7 +93,15 @@ TYPE: check_in
 TITLE: Check-In Test: ALL, ANY  
 START: 2025/04/20
 
-‼️ FINAL REMINDER: You must not generate any entries for dates beyond the END DATE. Double-check your plan before finalizing.
+
+‼️ FINAL REMINDER:
+1. You must not generate any entries for dates beyond the END DATE. The final calendar entry must be on or before the END DATE. Any entries after that are invalid.
+
+2. You must include **every single study topic** in at least one study entry. 
+   - It is acceptable to include **multiple topics** in one study entry if needed.
+   - No topic may be skipped or left out of the schedule.
+
+‼️ FINAL REMINDER: Double-check your plan before finalizing.
 """
 
 note_instructions = """
