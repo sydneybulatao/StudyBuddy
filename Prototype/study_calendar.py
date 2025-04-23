@@ -181,12 +181,12 @@ def get_study_plan_and_parse(end, retry_count=0):
       start = lines[i + 2].replace("START: ", "")
 
       # Check for valid start date
-      start_date = datetime.datetime.strptime(start, "%Y-%m-%d").date()
-      end_date = datetime.datetime.strptime(end, "%Y-%m-%d").date()
+      # start_date = datetime.datetime.strptime(start, "%Y-%m-%d").date()
+      # end_date = datetime.datetime.strptime(end, "%Y-%m-%d").date()
 
-      if start_date > end_date:
-        print(f"Start date {start} is beyond threshold {end}")
-        raise ValueError(f"Start date {start} is beyond threshold {end}")
+      # if start_date > end_date:
+      #   print(f"Start date {start} is beyond threshold {end}")
+      #   raise ValueError(f"Start date {start} is beyond threshold {end}")
       
       # Ensure correct event creation with type and color
       if entry_id == "check_in":
@@ -209,8 +209,8 @@ def get_study_plan_and_parse(end, retry_count=0):
     return entries
 
   except Exception as e:
-    # Retry logic with a maximum of 5 retries
-    if retry_count < 5:
+    # Retry logic with a maximum of 3 retries
+    if retry_count < 3:
       return get_study_plan_and_parse(end, retry_count + 1)
     else:
       # Show the error after 3 retries
