@@ -167,7 +167,7 @@ def generate_study_plan():
 
     return response
 
-def get_study_plan_and_parse(retry_count=0):
+def get_study_plan_and_parse(retry_count=0, end):
   try:
     study_plan = generate_study_plan()
 
@@ -179,6 +179,13 @@ def get_study_plan_and_parse(retry_count=0):
       entry_id = lines[i].replace("TYPE: ", "")
       title = lines[i + 1].replace("TITLE: ", "")
       start = lines[i + 2].replace("START: ", "")
+
+      # Check for valid start date
+      start_date = datetime.datetime.strptime(start, "%Y-%m-%d").date()
+      end_date = datetime.datetime.strptime(end, "%Y-%m-%d").date()
+
+      if start_date > end_date:
+        raise ValueError(f"Start date {start} is beyond threshold {end}")
       
       # Ensure correct event creation with type and color
       if entry_id == "check_in":
@@ -273,7 +280,8 @@ def display_calendar(course_name):
 
           # Get study plan and parse with error handling
           with st.spinner("Generating your personalized study plan..."):
-            study_plan_entries = get_study_plan_and_parse()
+            end = str(st.session_state.initial_input["test_date"] - timedelta(days=2))
+            study_plan_entries = get_study_plan_and_parse(end=end)
 
           with st.spinner("Adding insights from your diagnostic results..."):
             if study_plan_entries:

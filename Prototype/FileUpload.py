@@ -17,11 +17,9 @@ def summarize_uploaded_file(file_name: str) -> Tuple[str, List[str]]:
         rag_k=3
     )
 
-    print(rag_context)
-
     return generate_summary(rag_context)
 
-def generate_summary(rag_context: list) -> Tuple[str, List[str]]:
+def generate_summary(rag_context: list, retry_count: int = 0) -> Tuple[str, List[str]]:
     """Generate a clean, structured summary and extract study topics with fallback safety."""
     if not rag_context:
         return "No context available to summarize.", []
@@ -93,6 +91,14 @@ Here are the raw notes to process:
                         study_topics.append(clean_topic)
             elif line.startswith("###"):
                 break
+
+    # Retry or final error
+    if (not study_topics or not summary_text.strip()):
+        if retry_count < 3:
+            return generate_summary(rag_context, retry_count + 1)
+        else:
+            st.error("Error: Unable to generate study topics and notes summary.")
+            return "", []
 
     return summary_text, study_topics
 
