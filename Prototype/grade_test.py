@@ -31,7 +31,7 @@ You are providing insights for a student to guide their studying, based on how
 well they performed on a check-in test. The check-in test is only on a subset of topics. 
 For each topic, you will provide a keyword that lets the student know how well
 they did on the questions pertaining to that topic. In addition, you will output
-a short blurb of 2-3 sentences that lets the student know how well they did on the test, 
+a short blurb of 2 sentences that lets the student know how well they did on the test, 
 encourages them to further study topics that they didn't do well on, and commends
 them for topics they did do well on. Use a friendly, encouraging, and supportive tone. 
 Use emojis in your blurb to make it friendly!
@@ -44,18 +44,18 @@ KEYWORD CRITERIA:
 Revisit 🔴: The student got all "INCORRECT" for questions pertaining to the topic.
 Explanation: "You answered all questions incorrect."
 
-Refine 🟡: The student got some "INCORRECT" and some "CORRECT" for questions pertaining to the topic. 
+Learning 🟡: The student got some "INCORRECT" and some "CORRECT" for questions pertaining to the topic. 
 Explanation: "You answered some questions correct, but some incorrect."
 
-Mastered 🟢: The student got all "CORRECT" for questions pertaining to the topic. 
+Familiar 🟢: The student got all "CORRECT" for questions pertaining to the topic. 
 Explanation: "You answered all questions correct."
 
 OUTPUT:
 Strictly output as follows. There may be a smaller or larger number of topics than
 what is listed here. Make the topic names and keywords bold in all text that is output.
-<topic 1> : <one of the following, based on the critera and the questions in that topic: 'Revisit 🔴', 'Refine 🟡', 'Mastered 🟢'>
-<topic 2> : <one of the following, based on the critera and the questions in that topic: 'Revisit 🔴', 'Refine 🟡', 'Mastered 🟢'>
-<topic 3> : <one of the following, based on the critera and the questions in that topic: 'Revisit 🔴', 'Refine 🟡', 'Mastered 🟢'>
+<topic 1> : <one of the following, based on the critera and the questions in that topic: 'Revisit 🔴', 'Learning 🟡', 'Familiar 🟢'>
+<topic 2> : <one of the following, based on the critera and the questions in that topic: 'Revisit 🔴', 'Learning 🟡', 'Familiar 🟢'>
+<topic 3> : <one of the following, based on the critera and the questions in that topic: 'Revisit 🔴', 'Learning 🟡', 'Familiar 🟢'>
 
 <2-3 sentence blurb that lets the student know how well they did on the test and identifies areas to study further>
 """
@@ -68,7 +68,7 @@ topics currently, so it is important to be supportive. This test is on all
 topics that the student must study. 
 For each topic, you will provide a keyword that lets the student know how well
 they did on the questions pertaining to that topic. In addition, you will output
-a short blurb of 2-3 sentences that lets the student know how they did on the test, 
+a short blurb of 2 sentences that lets the student know how they did on the test, 
 encourages them to further study topics that they didn't do well on, and commends
 them for topics they did do well on. Use a friendly, encouraging, and supportive tone. 
 Use emojis in your blurb to make it friendly! Remind them that they don't need to 
@@ -79,21 +79,21 @@ the study plan will focus on the topics that they struggled with to help them be
 confident and prepared for their test. 
 
 KEYWORD CRITERIA:
-Revisit 🔴: The student got all "INCORRECT" for questions pertaining to the topic.
+Unfamiliar 🔴: The student got all "INCORRECT" for questions pertaining to the topic.
 Explanation: "You answered all questions incorrect."
 
-Refine 🟡: The student got some "INCORRECT" and some "CORRECT" for questions pertaining to the topic. 
+Somewhat Familiar 🟡: The student got some "INCORRECT" and some "CORRECT" for questions pertaining to the topic. 
 Explanation: "You answered some questions correct, but some incorrect."
 
-Mastered 🟢: The student got all "CORRECT" for questions pertaining to the topic. 
+Familiar 🟢: The student got all "CORRECT" for questions pertaining to the topic. 
 Explanation: "You answered all questions correct."
 
 OUTPUT:
 Strictly output as follows. There may be a smaller or larger number of topics than
 what is listed here. Make the topic names and keywords bold in all text that is output.
-<topic 1> : <one of the following, based on the critera and the questions in that topic: 'Revisit 🔴', 'Refine 🟡', 'Mastered 🟢'>
-<topic 2> : <one of the following, based on the critera and the questions in that topic: 'Revisit 🔴', 'Refine 🟡', 'Mastered 🟢'>
-<topic 3> : <one of the following, based on the critera and the questions in that topic: 'Revisit 🔴', 'Refine 🟡', 'Mastered 🟢'>
+<topic 1> : <one of the following, based on the critera and the questions in that topic: 'Unfamiliar 🔴', 'Somewhat Familiar 🟡', 'Familiar 🟢'>
+<topic 2> : <one of the following, based on the critera and the questions in that topic: 'Unfamiliar 🔴', 'Somewhat Familiar 🟡', 'Familiar 🟢'>
+<topic 3> : <one of the following, based on the critera and the questions in that topic: 'Unfamiliar 🔴', 'Somewhat Familiar 🟡', 'Familiar 🟢'>
 
 <2-3 sentence blurb that lets the student know how they did on the test and identifies areas to study further>
 """
@@ -104,7 +104,7 @@ You are providing insights for a student to guide their studying, based on how
 well they performed on an test. This test is on all topics that the student must study. 
 For each topic, you will provide a keyword that lets the student know how 
 they did on the questions pertaining to that topic. In addition, you will output
-a short blurb of 2-3 sentences that lets the student know how they did on the test, 
+a short blurb of 2 sentences that lets the student know how they did on the test, 
 points them to further study topics that they didn't do well on, and commends
 them for topics they did do well on. Use a friendly, encouraging, and supportive tone. 
 Use emojis in your blurb to make it friendly!
@@ -113,18 +113,18 @@ KEYWORD CRITERIA:
 Revisit 🔴: The student got all "INCORRECT" for questions pertaining to the topic.
 Explanation: "You answered all questions incorrect."
 
-Refine 🟡: The student got some "INCORRECT" and some "CORRECT" for questions pertaining to the topic. 
+Learning 🟡: The student got some "INCORRECT" and some "CORRECT" for questions pertaining to the topic. 
 Explanation: "You answered some questions correct, but some incorrect."
 
-Mastered 🟢: The student got all "CORRECT" for questions pertaining to the topic. 
+Familiar 🟢: The student got all "CORRECT" for questions pertaining to the topic. 
 Explanation: "You answered all questions correct."
 
 OUTPUT:
 Strictly output as follows. There may be a smaller or larger number of topics than
 what is listed here. Make the topic names and keywords bold in all text that is output.
-<topic 1> : <one of the following, based on the critera and the questions in that topic: 'Revisit 🔴', 'Refine 🟡', 'Mastered 🟢'>
-<topic 2> : <one of the following, based on the critera and the questions in that topic: 'Revisit 🔴', 'Refine 🟡', 'Mastered 🟢'>
-<topic 3> : <one of the following, based on the critera and the questions in that topic: 'Revisit 🔴', 'Refine 🟡', 'Mastered 🟢'>
+<topic 1> : <one of the following, based on the critera and the questions in that topic: 'Revisit 🔴', 'Learning 🟡', 'Familiar 🟢'>
+<topic 2> : <one of the following, based on the critera and the questions in that topic: 'Revisit 🔴', 'Learning 🟡', 'Familiar 🟢'>
+<topic 3> : <one of the following, based on the critera and the questions in that topic: 'Revisit 🔴', 'Learning 🟡', 'Familiar 🟢'>
 
 <2-3 sentence blurb that lets the student know how they did on the test and identifies areas to study further>
 """
@@ -351,14 +351,18 @@ def grade_test_page():
 
       # If diagnostic test, format the insights for the study plan generation
       if (test_type == "Diagnostic Test"):
-        statuses = ["Revisit 🔴", "Refine 🟡", "Mastered 🟢"]
+        # Output message about insights for diagnostic test
+        st.write("StudyBuddy will take your familiarity with each topic into account when customizing your study plan! Each topic will studied at least once, but less familiar topics will be prioritized.")
+
+        # Format the insights for calendar generation
+        statuses = ["Unfamiliar 🔴", "Somewhat Familiar 🟡", "Familiar 🟢"]
 
         # Use regex to match lines ending in one of those
-        pattern = r"^.*: (Revisit 🔴|Refine 🟡|Mastered 🟢)$"
+        pattern = r"^.*: (Unfamiliar 🔴|Somewhat Familiar 🟡|Familiar 🟢)$"
         topics = [line.strip() for line in insights.strip().split('\n') if re.match(pattern, line.strip())]
 
         # Categorize by status
-        categorized = {"Revisit 🔴": [], "Refine 🟡": [], "Mastered 🟢": []}
+        categorized = {"Unfamiliar 🔴": [], "Somewhat Familiar 🟡": [], "Familiar 🟢": []}
         for line in topics:
             for status in statuses:
                 if line.endswith(status):

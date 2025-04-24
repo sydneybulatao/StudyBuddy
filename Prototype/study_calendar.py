@@ -13,9 +13,9 @@ You are helping create a customized study plan for a student. You will receive t
 - The current date (CURRENT DATE)
 
 Topics will be provided in three categories of mastery:
-- Revisit 🔴: Topics the student struggled with. These should be studied first and may require multiple days of review.
-- Refine 🟡: Topics the student somewhat understands. These should be reviewed after Revisit topics and may require more than one session.
-- Mastered 🟢: Topics the student is comfortable with. These should be reviewed briefly and only once.
+- Unfamiliar 🔴: Topics the student struggled with. These should be studied first and may require multiple days of review.
+- Somewhat Familiar 🟡: Topics the student somewhat understands. These should be reviewed after Revisit topics and may require more than one session.
+- Familiar 🟢: Topics the student is comfortable with. These should be reviewed briefly and only once.
 
 Your task is to break up the topics and generate a calendar-based study plan starting on the CURRENT DATE and ending on the END DATE.
 As the student studies topics, they should also complete check-in tests after completing one or more related topics.
@@ -23,13 +23,13 @@ As the student studies topics, they should also complete check-in tests after co
 Study Plan Rules:
 - Every topic provided must appear in **at least one study entry**. Do not skip any topics.
 - If there are more topics than available days, **combine multiple related topics into one study entry**.
-  - Prioritize stacking topics in the same category (e.g., two Revisit 🔴 topics together).
+  - Prioritize stacking topics in the same category (e.g., two Unfamiliar 🔴 topics together).
   - You may combine 2–3 topics per day if needed.
   - Try to balance workload sensibly so that the student is not overwhelmed.
-- Prioritize topics in this order: Revisit 🔴 → Refine 🟡 → Mastered 🟢.
-- Topics in the Revisit 🔴 category should appear multiple times (2–3 study sessions each depending on available days).
-- Topics in the Refine 🟡 category may also appear more than once if time allows.
-- Topics in the Mastered 🟢 category should be studied only once.
+- Prioritize topics in this order: Unfamiliar 🔴 → Somewhat Familiar 🟡 → Familiar 🟢.
+- Topics in the Unfamiliar 🔴 category should appear multiple times (2–3 study sessions each depending on available days).
+- Topics in the Somewhat Familiar 🟡 category may also appear more than once if time allows.
+- Topics in the Familiar 🟢 category should be studied only once.
 - ALL topics must be studied — no topics may be skipped.
 - Check-In Tests should be scheduled after related topics are studied (1–3 topics per test).
 - The student studies once per day. Only one calendar entry per day is allowed.
@@ -64,9 +64,9 @@ EXAMPLES:
 INPUT:  
 COURSE NAME: Database Design and Structure  
 TOPICS:  
-Revisit 🔴: Aggregate Functions, JOIN  
-Refine 🟡: ALL  
-Mastered 🟢: ANY  
+Unfamiliar 🔴: Aggregate Functions, JOIN  
+Somewhat Familiar 🟡: ALL  
+Familiar 🟢: ANY  
 STUDY TIME PER DAY: 0.5 hours  
 END DATE: 4/20/2025  
 CURRENT DATE: 4/13/2025  
@@ -100,9 +100,9 @@ START: 2025/04/20
 INPUT:
 COURSE NAME: Software Engineering Principles
 TOPICS:
-Revisit 🔴: Requirements Analysis, Design Patterns, UML, Agile Methodologies
-Refine 🟡: Testing Strategies, Version Control, CI/CD
-Mastered 🟢: Deployment, DevOps Basics, Documentation
+Unfamiliar 🔴: Requirements Analysis, Design Patterns, UML, Agile Methodologies
+Somewhat Familiar 🟡: Testing Strategies, Version Control, CI/CD
+Familiar 🟢: Deployment, DevOps Basics, Documentation
 STUDY TIME PER DAY: 1 hour
 END DATE: 4/27/2025
 CURRENT DATE: 4/21/2025
@@ -148,9 +148,9 @@ You are helping create a personalized study note based on a diagnostic test.
 You will be given:
 1. A TITLE which includes the time and the specific topic(s) being studied today.
 2. A TOPICS section that shows the student's diagnostic results, categorized into:
-   - Revisit 🔴: Topics the student struggled with (high priority)
-   - Refine 🟡: Topics the student somewhat understands (medium priority)
-   - Mastered 🟢: Topics the student is comfortable with (low priority)
+   - Unfamiliar 🔴: Topics the student struggled with (high priority)
+   - Somewhat Familiar 🟡: Topics the student somewhat understands (medium priority)
+   - Familiar 🟢: Topics the student is comfortable with (low priority)
 
 YOUR TASK:
 Write a one-sentence note that:
@@ -166,9 +166,9 @@ FORMAT:
 Input:  
 TITLE: 📚 Study 1 Hour <Topic1>, <Topic2>, ...
 TOPICS:  
-Revisit 🔴: <list of topics>  
-Refine 🟡: <list of topics>  
-Mastered 🟢: <list of topics>
+Unfamiliar 🔴: <list of topics>  
+Somewhat Familiar 🟡: <list of topics>  
+Familiar 🟢: <list of topics>
 
 Output:  
 A one-sentence note that:
@@ -180,9 +180,9 @@ Example 1:
 Input:  
 TITLE: 📚 Study 1 Hour JOIN, ALL  
 TOPICS:  
-Revisit 🔴: Aggregate Functions, JOIN  
-Refine 🟡: ALL  
-Mastered 🟢: ANY
+Unfamiliar 🔴: Aggregate Functions, JOIN  
+Somewhat Familiar 🟡: ALL  
+Familiar 🟢: ANY
 
 Output:  
 You struggled with JOIN on the diagnostic test, but did okay with ALL. Prioritize JOIN a bit more than ALL when studying.
@@ -191,9 +191,9 @@ Example 2:
 Input:  
 TITLE: 📚 Study 1 Hour Aggregate Functions  
 TOPICS:  
-Revisit 🔴: Aggregate Functions, JOIN  
-Refine 🟡: ALL  
-Mastered 🟢: ANY
+Unfamiliar 🔴: Aggregate Functions, JOIN  
+Somewhat Familiar 🟡: ALL  
+Familiar 🟢: ANY
 
 Output:  
 You struggled with Aggregate Functions on the diagnostic test, so make sure to review it thoroughly.
@@ -262,8 +262,8 @@ def get_study_plan_and_parse(end, retry_count=0):
     return entries
 
   except Exception as e:
-    # Retry logic with a maximum of 3 retries
-    if retry_count < 3:
+    # Retry logic with a maximum of 5 retries
+    if retry_count < 5:
       return get_study_plan_and_parse(end, retry_count + 1)
     else:
       # Show the error after 3 retries
