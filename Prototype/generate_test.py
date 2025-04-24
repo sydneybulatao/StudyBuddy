@@ -29,7 +29,7 @@ def generate_test_page():
       st.session_state.go_home = True
       st.rerun()
 
-    st.header("Overall Assessment Generator")
+    st.header("Overall Practice Test Generator")
     st.write("Build a custom practice test, based on all study topics.")
     st.write("We recommend taking this test at the end of your studying journey to assess your overall knowledge.")
 
@@ -66,7 +66,7 @@ def generate_test_page():
 
       SESSION_ID = st.session_state.session_id
 
-      st.subheader("📄 Generating Your Overall Assessment...")
+      st.subheader("📄 Generating Your Practice Test...")
       st.info("This may take a moment...")
 
       # Build system prompt

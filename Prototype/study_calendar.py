@@ -301,23 +301,14 @@ def display_calendar(course_name):
     # Check if calendar populated yet
     if 'events' not in st.session_state:
       if test_date:
-          # Add initial and final assessments
-          initial_assessment_day = date.today()
-          final_assessment_day = test_date - timedelta(days=1)
+          # Add overall final practice test
+          overall_assessment_day = test_date - timedelta(days=1)
 
           events = [
               {
                   "id": "assessment",
-                  "title": f"📝 Initial Assessment: {course_name}",
-                  "start": initial_assessment_day.strftime("%Y-%m-%d"),
-                  "allDay": True,
-                  "backgroundColor": "#78C18A",
-                  "borderColor": "#78C18A",
-              },
-              {
-                  "id": "assessment",
-                  "title": f"📝 Final Assessment: {course_name}",
-                  "start": final_assessment_day.strftime("%Y-%m-%d"),
+                  "title": f"📝 Overall Practice Test: {course_name}",
+                  "start": overall_assessment_day.strftime("%Y-%m-%d"),
                   "allDay": True,
                   "backgroundColor": "#78C18A",
                   "borderColor": "#78C18A",

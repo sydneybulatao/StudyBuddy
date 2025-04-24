@@ -94,10 +94,8 @@ def home_page():
     ### Buttons for naviation
     check_in_test = st.button("Take Check-In Test", 
       help="Take a focused test on selected topics you've studied so far.")
-    take_test = st.button("Take Overall Assessment", 
+    take_test = st.button("Take Overall Practice Test", 
       help="Take a test on all topics.")
-    # upload_notes = st.button("Upload Notes", 
-    #   help="Add additional notes to your studying material.")
 
     ## Handle button clicks
     if take_test:
@@ -106,10 +104,6 @@ def home_page():
     elif check_in_test:
       st.session_state.generate_check_in = True
       st.rerun()
-
-    # elif upload_notes:
-    #   st.session_state.upload_notes = True
-    #   st.rerun()
 
     if ('test_stats' in st.session_state):
       st.markdown(f"""
