@@ -2,6 +2,7 @@ from streamlit_calendar import calendar
 from datetime import datetime, timedelta, date
 import streamlit as st
 from llmproxy import generate
+import base64
 
 study_plan_instructions = """
 INSTRUCTIONS:
@@ -291,7 +292,44 @@ def show_event_details(event_title, event_start):
 
     event_notes = st.session_state.event_notes.get(event_title, "")
     if (event_notes != ""):
-      st.write(f"**Note:** {event_notes}")
+      st.write(f"**Insights:** {event_notes}")
+
+@st.dialog("Welcome to Your Study Plan!", width="large")
+def show_welcome_message():
+    # First GIF and Message
+    file_ = open("gifs/click.gif", "rb")
+    contents = file_.read()
+    data_url = base64.b64encode(contents).decode("utf-8")
+    file_.close()
+    
+    st.markdown(
+        f"""
+        <div style="text-align: center;">
+            <img src="data:image/gif;base64,{data_url}" alt="click task gif" style="max-width: 100%; height: auto;" />
+            <p style="font-weight: bold;">Click on tasks for more information</p>
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
+    st.write("") 
+
+    if st.button("Next", type="primary"):
+        # Second GIF and Message
+        file_ = open("gifs/drag.gif", "rb")
+        contents = file_.read()
+        data_url = base64.b64encode(contents).decode("utf-8")
+        file_.close()
+
+        st.markdown(
+            f"""
+            <div style="text-align: center;">
+                <img src="data:image/gif;base64,{data_url}" alt="drag task gif" style="max-width: 100%; height: auto;" />
+                <p style="font-weight: bold;">Drag and drop tasks to customize</p>
+            </div>
+            """,
+            unsafe_allow_html=True,
+        )
+
 
 def display_calendar(course_name):
     st.header("🗓️ " + st.session_state.initial_input.get("name") + "'s Study Calendar")
@@ -350,6 +388,9 @@ def display_calendar(course_name):
 
             # Save events
             st.session_state.events = events
+
+          # Display pop-up if first time viewing
+          show_welcome_message()
 
       else:
         st.error("Error: No test date input.")

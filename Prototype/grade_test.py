@@ -8,7 +8,9 @@ shorten_instructions = """
 INSTRUCTIONS:
 You will be given text containing the test insights from a student's practice test. 
 Shorten the insights and summarize them into 3 sentences. Feel free to add emojis.
-Do not make anything bold. Remove any ** symbols you see."""
+Do not make anything bold. Remove any ** symbols you see. 
+
+Address the student directly."""
 
 grading_instructions = """
 INSTRUCTIONS:
@@ -352,7 +354,7 @@ def grade_test_page():
       # If diagnostic test, format the insights for the study plan generation
       if (test_type == "Diagnostic Test"):
         # Output message about insights for diagnostic test
-        st.write("StudyBuddy will take your familiarity with each topic into account when customizing your study plan! Each topic will studied at least once, but less familiar topics will be prioritized.")
+        st.write("StudyBuddy will take your familiarity with each topic into account when customizing your study plan! **Each topic will studied at least once**, but less familiar topics will be prioritized.")
 
         # Format the insights for calendar generation
         statuses = ["Unfamiliar 🔴", "Somewhat Familiar 🟡", "Familiar 🟢"]
