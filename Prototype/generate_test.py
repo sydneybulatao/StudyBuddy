@@ -17,8 +17,25 @@ def generate_test_page():
     st.title("Study Buddy")
     st.divider()
 
+    with st.expander("📝 Welcome to Your Overall Practice Test!", expanded=True):
+      st.markdown("""
+        Here's how to set up your overall practice test:
+
+        - **Number of Questions**: Pick how many questions you want — between 5 and 20.
+        - **Question Format**: Choose whether you want **multiple choice** or **short answer** questions.
+        - **Familiarity Slider**: Select how familiar you are with the material.  
+          - Lower values = easier, more basic questions.  
+          - Higher values = harder, more in-depth questions.
+
+        ---
+
+        🔔 **Please Note**:  
+        The questions generated are strictly conceptual and are designed to test if you have studied the uploaded material.  
+        They are not guaranteed to cover every nuance or ensure complete mastery of the topics.
+        """)
+
     # Home button
-    if st.button("Home"):
+    if st.button("Home", type='primary'):
       # Reset any test session variables
       st.session_state.generate_test = False
       st.session_state.upload_notes = False
@@ -181,7 +198,7 @@ def generate_test_page():
       # Test information
       st.session_state.questions = test_data
       st.session_state.test_type = "Overall Assessment"
-      st.session_state.topics = st.session_state.all_topics
+      # st.session_state.topics = st.session_state.all_topics
       st.session_state.subject = subject
 
       st.session_state.test_input_submitted = True

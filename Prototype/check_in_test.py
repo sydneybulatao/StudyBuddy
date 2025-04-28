@@ -18,7 +18,7 @@ def generate_check_in_test_page():
     st.divider()
 
     # Home button
-    if st.button("Home"):
+    if st.button("Home", type='primary'):
       # Reset any test session variables
       st.session_state.generate_test = False
       st.session_state.upload_notes = False
@@ -30,6 +30,29 @@ def generate_check_in_test_page():
 
       st.session_state.go_home = True
       st.rerun()
+
+    # ✅ Insert popup control here
+    if 'show_check_in_popup' not in st.session_state:
+        st.session_state.show_check_in_popup = True
+
+    if st.session_state.show_check_in_popup:
+        with st.expander("📝 Welcome to Your Custom Practice Test!", expanded=True):
+              st.markdown("""
+              Here's how to set up your test:
+
+              - **Choose Topics**: Select one or more subtopics you want to be tested on. *(You can also select 'All' to be tested on everything.)*
+              - **Number of Questions**: Pick how many questions you want — between 5 and 20.
+              - **Question Format**: Choose whether you want **multiple choice** or **short answer** questions.
+              - **Familiarity Slider**: Select how familiar you are with the material.  
+                - Lower values = easier, more basic questions.  
+                - Higher values = harder, more in-depth questions.
+
+              ---
+
+            🔔 **Please Note**:  
+            The questions generated are strictly conceptual and are designed to test if you have studied the uploaded material.  
+            They are not guaranteed to cover every nuance or ensure complete mastery of the topics.
+            """)
 
     st.header("Check-In Test Generator")
     st.write("Build a custom practice test focused on specific subtopics to help you study.")
@@ -44,7 +67,20 @@ def generate_check_in_test_page():
     st.subheader("🛠️ Customize Your Check-In Test")
     st.write("Subject: " + subject)
     st.write("Select the specific topics you want to be tested on:")
-    selected_topics = st.multiselect("📚 Choose Topics", all_topics)
+
+    # 🔵 Insert "All" as an option
+    options_with_all = ["All"] + all_topics
+
+    # 🔵 Multiselect from options including "All"
+    selected_options = st.multiselect("📚 Choose Topics", options_with_all)
+
+    # 🔵 If "All" is selected, automatically select all real topics
+    if "All" in selected_options:
+        final_selected_topics = all_topics
+    else:
+        final_selected_topics = selected_options
+
+    # 🔵 Save into session state or whatever you're using
     st.session_state.test_input = {}
     submit = False
 
@@ -62,7 +98,7 @@ def generate_check_in_test_page():
           help="1 = not at all familiar, 5 = very familiar"
       )
 
-      st.session_state.test_input["selected_topics"] = selected_topics
+      st.session_state.test_input["selected_topics"] = final_selected_topics
 
       submit = st.form_submit_button("Generate Practice Test")
 
@@ -111,7 +147,7 @@ def generate_check_in_test_page():
         Your job is to generate a **Check-In Practice Test** that:
         - Contains EXACTLY {num_questions} questions — no more, no less.
         - Uses ONLY this question format: "{question_type}"
-        - Focuses ONLY on the following selected subtopics: {', '.join(selected_topics)}
+        - Focuses ONLY on the following selected subtopics: {', '.join(final_selected_topics)}
         - Aligns with the student's familiarity rating of {familiarity}/5:
         - 1-2 = easier questions on basic ideas and definitions.
         - 3 = mixed difficulty, with some reasoning or applied questions.
