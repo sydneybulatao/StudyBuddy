@@ -50,13 +50,13 @@ Date Rules — Very Important:
 STUDY TIME PER DAY is given in hours. If it is less than 1 hour, convert it into minutes for the title (e.g., 0.5 hours → 30 Minutes, 0.75 hours → 45 Minutes, etc.).
 
 OUTPUT:
-Strictly output your response in the following format for each calendar entry. 
-For studying entries:
+Strictly output your response in only one of the two following formats for each calendar entry. 
+For studying entries, strictly output as follows:
 TYPE: study  
 TITLE: Study <study time>: <topic or topic(s) to study>  
 START: <date in yyyy-mm-dd format>  
 
-For check-in test entries:
+For check-in test entries, strictly output as follows:
 TYPE: check_in  
 TITLE: Check-In Test: <topic or topic(s) to do check-in test for>  
 START: <date in yyyy-mm-dd format>  
@@ -263,11 +263,11 @@ def get_study_plan_and_parse(end, retry_count=0):
     return entries
 
   except Exception as e:
-    # Retry logic with a maximum of 5 retries
-    if retry_count < 5:
+    # Retry logic with a maximum of 10 retries
+    if retry_count < 10:
       return get_study_plan_and_parse(end, retry_count + 1)
     else:
-      # Show the error after 3 retries
+      # Show the error after all retries used 
       st.error("Error: Incorrect study plan format generated.")
       return []
 
