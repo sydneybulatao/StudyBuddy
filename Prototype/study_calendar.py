@@ -1,3 +1,5 @@
+# File: study_calendar.py
+
 from streamlit_calendar import calendar
 from datetime import datetime, timedelta, date
 import streamlit as st
@@ -200,234 +202,218 @@ Output:
 You struggled with Aggregate Functions on the diagnostic test, so make sure to review it thoroughly.
 """
 
-
 def generate_study_plan():
-    # Get study plan from model
-    response = generate(model = '4o-mini',
-      system = study_plan_instructions,
-      query = "COURSE NAME: " + st.session_state.initial_input["course"] + \
-        "TOPICS: " + st.session_state.diagnostic_results_str + \
-        "STUDY TIME PER DAY: " + str(st.session_state.initial_input["study_time_per_day"]) + " hours" + \
-        "END DATE: " + str(st.session_state.initial_input["test_date"] - timedelta(days=2)) + \
-        "CURRENT DATE: " + str(date.today()),
-      temperature = 0.0,
-      lastk = 0,
-      session_id = "calendar_session",
-      rag_usage = False)
-    response = response.get("response", "") if isinstance(response, dict) else response
-
-    return response
+    response = generate(
+        model="4o-mini",
+        system=study_plan_instructions,
+        query="COURSE NAME: " + st.session_state.initial_input["course"] +
+              "TOPICS: " + st.session_state.diagnostic_results_str +
+              "STUDY TIME PER DAY: " + str(st.session_state.initial_input["study_time_per_day"]) + " hours" +
+              "END DATE: " + str(st.session_state.initial_input["test_date"] - timedelta(days=2)) +
+              "CURRENT DATE: " + str(date.today()),
+        temperature=0.0,
+        lastk=0,
+        session_id="calendar_session",
+        rag_usage=False
+    )
+    return response.get("response", "") if isinstance(response, dict) else response
 
 def get_study_plan_and_parse(end, retry_count=0):
-  try:
-    study_plan = generate_study_plan()
+    try:
+        study_plan = generate_study_plan()
+        lines = [line.strip() for line in study_plan.strip().splitlines() if line.strip()]
+        entries = []
+        for i in range(0, len(lines), 3):
+            entry_id = lines[i].replace("TYPE: ", "")
+            title = lines[i + 1].replace("TITLE: ", "")
+            start = lines[i + 2].replace("START: ", "")
 
-    # Parse the study plan
-    lines = [line.strip() for line in study_plan.strip().splitlines() if line.strip()]
-    entries = []
+            if entry_id == "check_in":
+                title = "✅ " + title
+                color = "#254E70"
+            elif entry_id == "study":
+                title = "📚 " + title
+                color = "#8FB8DE"
+            else:
+                entry_id = "unknown"
+                color = "#000"
 
-    for i in range(0, len(lines), 3):
-      entry_id = lines[i].replace("TYPE: ", "")
-      title = lines[i + 1].replace("TITLE: ", "")
-      start = lines[i + 2].replace("START: ", "")
+            entries.append({
+                "title": title,
+                "start": start,
+                "id": entry_id,
+                "color": color
+            })
 
-      # Check for valid start date
-      # start_date = datetime.datetime.strptime(start, "%Y-%m-%d").date()
-      # end_date = datetime.datetime.strptime(end, "%Y-%m-%d").date()
+        if entries == []:
+            raise ValueError("Empty entries list")
 
-      # if start_date > end_date:
-      #   print(f"Start date {start} is beyond threshold {end}")
-      #   raise ValueError(f"Start date {start} is beyond threshold {end}")
-      
-      # Ensure correct event creation with type and color
-      if entry_id == "check_in":
-          title = "✅ " + title
-          color = "#254E70"
-      elif entry_id == "study":
-          title = "📚 " + title
-          color = "#8FB8DE"
-      else:
-          entry_id = "unknown"
-          color = "#000"
+        return entries
 
-      entries.append({
-          "title": title,
-          "start": start,
-          "id": entry_id,
-          "color": color
-      })
-
-    if (entries == []):
-      raise ValueError(f"Empty entries list")
-
-    return entries
-
-  except Exception as e:
-    # Retry logic with a maximum of 5 retries
-    if retry_count < 5:
-      return get_study_plan_and_parse(end, retry_count + 1)
-    else:
-      # Show the error after 3 retries
-      st.error("Error: Incorrect study plan format generated.")
-      return []
+    except Exception as e:
+        if retry_count < 5:
+            return get_study_plan_and_parse(end, retry_count + 1)
+        else:
+            st.error("Error: Incorrect study plan format generated.")
+            return []
 
 def generate_note(event):
-  # Generate a note based on the student's performance on the diagnostic test
-  response = generate(model = '4o-mini',
-    system = note_instructions,
-    query = "TITLE: " + event.get("title", "") + \
-      "TOPICS: " + st.session_state.diagnostic_results_str,
-    temperature = 0.0,
-    lastk = 0,
-    session_id = "note_session",
-    rag_usage = False)
-  response = response.get("response", "") if isinstance(response, dict) else response
-
-  return response
+    response = generate(
+        model="4o-mini",
+        system=note_instructions,
+        query="TITLE: " + event.get("title", "") +
+              "TOPICS: " + st.session_state.diagnostic_results_str,
+        temperature=0.0,
+        lastk=0,
+        session_id="note_session",
+        rag_usage=False
+    )
+    return response.get("response", "") if isinstance(response, dict) else response
 
 @st.dialog("Task")
-def show_event_details(event_title, event_start):
+def show_event_details():
+    event_title = st.session_state.get("selected_event_title", "Unknown Title")
+    event_start = st.session_state.get("selected_event_start", "Unknown Date")
+
     st.write(f"**{event_title}**")
     st.write(f"**Date:** {event_start}")
 
     event_notes = st.session_state.event_notes.get(event_title, "")
-    if (event_notes != ""):
-      st.write(f"**Insights:** {event_notes}")
+    if event_notes:
+        st.write(f"**Insights:** {event_notes}")
+
+    key_name = f"completed_{event_title}_{event_start}"
+
+    if key_name not in st.session_state:
+        st.session_state[key_name] = False  # Initialize if missing
+
+    if st.checkbox("✅ Mark as Completed", key=key_name):
+        # Update the event directly in session_state.events
+        updated_events = []
+        for event in st.session_state.events:
+            if event['title'] == event_title and event['start'] == event_start:
+                updated_event = event.copy()
+                updated_event['title'] = "✔️ " + event['title']
+                updated_event['backgroundColor'] = "#B0B0B0"
+                updated_event['borderColor'] = "#B0B0B0"
+                updated_events.append(updated_event)
+            else:
+                updated_events.append(event)
+
+        st.session_state.events = updated_events  # Save updated events
+
+        # 🚨 Clear selected event after marking complete
+        st.session_state.pop("selected_event_title", None)
+        st.session_state.pop("selected_event_start", None)
+
+        st.success("Marked as completed! ✅")
+
+        # Force calendar to rerun safely
+        # st.rerun()
 
 @st.dialog("Welcome to Your Study Plan!", width="large")
 def show_welcome_message():
-    # First GIF and Message
-    file_ = open("gifs/click.gif", "rb")
-    contents = file_.read()
+    with open("gifs/click.gif", "rb") as file_:
+        contents = file_.read()
     data_url = base64.b64encode(contents).decode("utf-8")
-    file_.close()
-    
-    st.markdown(
-        f"""
-        <div style="text-align: center;">
+
+    st.markdown(f"""
+        <div style='text-align: center;'>
             <img src="data:image/gif;base64,{data_url}" alt="click task gif" style="max-width: 100%; height: auto;" />
             <p style="font-weight: bold;">Click on tasks for more information</p>
         </div>
-        """,
-        unsafe_allow_html=True,
-    )
-    st.write("") 
+    """, unsafe_allow_html=True)
 
     if st.button("Next", type="primary"):
-        # Second GIF and Message
-        file_ = open("gifs/drag.gif", "rb")
-        contents = file_.read()
+        with open("gifs/drag.gif", "rb") as file_:
+            contents = file_.read()
         data_url = base64.b64encode(contents).decode("utf-8")
-        file_.close()
 
-        st.markdown(
-            f"""
-            <div style="text-align: center;">
+        st.markdown(f"""
+            <div style='text-align: center;'>
                 <img src="data:image/gif;base64,{data_url}" alt="drag task gif" style="max-width: 100%; height: auto;" />
                 <p style="font-weight: bold;">Drag and drop tasks to customize</p>
             </div>
-            """,
-            unsafe_allow_html=True,
-        )
-
+        """, unsafe_allow_html=True)
 
 def display_calendar(course_name):
     st.header("🗓️ " + st.session_state.initial_input.get("name") + "'s Study Calendar")
-
     test_date = st.session_state.initial_input.get("test_date")
 
-    # Check if calendar populated yet
     if 'events' not in st.session_state:
-      if test_date:
-          # Add overall final practice test
-          overall_assessment_day = test_date - timedelta(days=1)
-
-          events = [
-              {
-                  "id": "assessment",
-                  "title": f"📝 Overall Practice Test: {course_name}",
-                  "start": overall_assessment_day.strftime("%Y-%m-%d"),
-                  "allDay": True,
-                  "backgroundColor": "#78C18A",
-                  "borderColor": "#78C18A",
-              },
-              {
-                  "id": "exam_day",
-                  "title": f"📅 Exam Day: {course_name}",
-                  "start": test_date.strftime("%Y-%m-%d"),
-                  "allDay": True,
-                  "backgroundColor": "#F8E16C",
-                  "borderColor": "#F8E16C",
-              }
-          ]
-
-          # Get study plan and parse with error handling
-          with st.spinner("Generating your personalized study plan..."):
-            end = str(st.session_state.initial_input["test_date"] - timedelta(days=2))
-            study_plan_entries = get_study_plan_and_parse(end=end)
-
-          with st.spinner("Adding insights from your diagnostic results..."):
-            if study_plan_entries:
-              st.session_state.event_notes = {}
-              # Add to calendar entries
-              for entry in study_plan_entries:
-                events.append(
-                  {
-                    "id": entry.get("id"),
-                    "title": entry.get("title"),
-                    "start": entry.get("start"),
+        if test_date:
+            overall_assessment_day = test_date - timedelta(days=1)
+            events = [
+                {
+                    "id": "assessment",
+                    "title": f"📝 Overall Practice Test: {course_name}",
+                    "start": overall_assessment_day.strftime("%Y-%m-%d"),
                     "allDay": True,
-                    "backgroundColor": entry.get("color"),
-                    "borderColor": entry.get("color")
-                  }
-                )
+                    "backgroundColor": "#78C18A",
+                    "borderColor": "#78C18A",
+                },
+                {
+                    "id": "exam_day",
+                    "title": f"📅 Exam Day: {course_name}",
+                    "start": test_date.strftime("%Y-%m-%d"),
+                    "allDay": True,
+                    "backgroundColor": "#F8E16C",
+                    "borderColor": "#F8E16C",
+                }
+            ]
 
-                # Generate a note for the event, if it's a studying event
-                if (entry.get("id") == "study"):
-                  st.session_state.event_notes[entry.get("title")] = generate_note(entry)
+            with st.spinner("Generating your personalized study plan..."):
+                end = str(test_date - timedelta(days=2))
+                study_plan_entries = get_study_plan_and_parse(end=end)
 
-            # Save events
-            st.session_state.events = events
+            with st.spinner("Adding insights from your diagnostic results..."):
+                if study_plan_entries:
+                    st.session_state.event_notes = {}
+                    for entry in study_plan_entries:
+                        events.append({
+                            "id": entry.get("id"),
+                            "title": entry.get("title"),
+                            "start": entry.get("start"),
+                            "allDay": True,
+                            "backgroundColor": entry.get("color"),
+                            "borderColor": entry.get("color")
+                        })
+                        if entry.get("id") == "study":
+                            st.session_state.event_notes[entry.get("title")] = generate_note(entry)
 
-          # Display pop-up if first time viewing
-          show_welcome_message()
+                    st.session_state.events = events
+                    show_welcome_message()
+        else:
+            st.error("Error: No test date input.")
 
-      else:
-        st.error("Error: No test date input.")
+    if st.session_state.get('events'):
+        clicked = calendar(
+            events=st.session_state.events,
+            options={
+                "initialView": "dayGridMonth",
+                "height": 700,
+                "editable": True,
+                "selectable": True,
+                "headerToolbar": {
+                    "left": "prev,next today",
+                    "center": "title",
+                    "right": "dayGridMonth,timeGridWeek,timeGridDay"
+                }
+            },
+            custom_css="""
+                .fc-event {
+                    font-size: 12px;
+                    padding: 4px;
+                }
+            """,
+            callbacks=["eventClick"],
+            key="study_calendar"
+        )
 
-    if st.session_state.events:
-      # 📅 Set up calendar with eventClick enabled
-      clicked = calendar(
-          events=st.session_state.events,
-          options={
-              "initialView": "dayGridMonth",
-              "height": 700,
-              "editable": True,
-              "selectable": True,
-              "headerToolbar": {
-                  "left": "prev,next today",
-                  "center": "title",
-                  "right": "dayGridMonth,timeGridWeek,timeGridDay"
-              }
-          },
-          custom_css="""
-              .fc-event {
-                  font-size: 12px;
-                  padding: 4px;
-              }
-          """,
-          callbacks=["eventClick"],  # Enable event click callback
-          key="study_calendar"
-      )
-
-      # Check if the user clicked on an event
-      if clicked and clicked.get("eventClick"):
-        event = clicked["eventClick"]["event"]
-        event_title = event['title']
-        event_start = event['start']
-        
-        # Show the event details in a dialog
-        show_event_details(event_title, event_start)
-    
+        if clicked and clicked.get("eventClick"):
+            event = clicked["eventClick"]["event"]
+            st.session_state.selected_event_title = event['title']
+            st.session_state.selected_event_start = event['start']
+            show_event_details()
     else:
-      st.error("Error: Cannot generate study plan.")
+        st.error("Error: Cannot generate study plan.")
