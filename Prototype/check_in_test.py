@@ -67,7 +67,20 @@ def generate_check_in_test_page():
     st.subheader("🛠️ Customize Your Check-In Test")
     st.write("Subject: " + subject)
     st.write("Select the specific topics you want to be tested on:")
-    selected_topics = st.multiselect("📚 Choose Topics", all_topics)
+
+    # 🔵 Insert "All" as an option
+    options_with_all = ["All"] + all_topics
+
+    # 🔵 Multiselect from options including "All"
+    selected_options = st.multiselect("📚 Choose Topics", options_with_all)
+
+    # 🔵 If "All" is selected, automatically select all real topics
+    if "All" in selected_options:
+        final_selected_topics = all_topics
+    else:
+        final_selected_topics = selected_options
+
+    # 🔵 Save into session state or whatever you're using
     st.session_state.test_input = {}
     submit = False
 
