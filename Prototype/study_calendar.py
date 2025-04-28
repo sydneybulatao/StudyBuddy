@@ -250,14 +250,14 @@ def get_study_plan_and_parse(end, retry_count=0):
 
         return entries
 
-  except Exception as e:
-    # Retry logic with a maximum of 10 retries
-    if retry_count < 10:
-      return get_study_plan_and_parse(end, retry_count + 1)
-    else:
-      # Show the error after all retries used 
-      st.error("Error: Incorrect study plan format generated.")
-      return []
+    except Exception as e:
+      # Retry logic with a maximum of 10 retries
+      if retry_count < 10:
+        return get_study_plan_and_parse(end, retry_count + 1)
+      else:
+        # Show the error after all retries used 
+        st.error("Error: Incorrect study plan format generated.")
+        return []
 
 def generate_note(event):
     response = generate(
