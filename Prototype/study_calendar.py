@@ -283,33 +283,39 @@ def show_event_details():
         st.write(f"**Insights:** {event_notes}")
 
     key_name = f"completed_{event_title}_{event_start}"
-
-    if key_name not in st.session_state:
-        st.session_state[key_name] = False  # Initialize if missing
-
-    if st.checkbox("✅ Mark as Completed", key=key_name):
-        # Update the event directly in session_state.events
+    if st.checkbox("Mark as Completed", key=key_name):
+        # Find the event and update it
         updated_events = []
-        for event in st.session_state.events:
-            if event['title'] == event_title and event['start'] == event_start:
-                updated_event = event.copy()
-                updated_event['title'] = "✔️ " + event['title']
+        for e in st.session_state.events:
+            if e['title'] == event_title and e['start'] == event_start:
+                updated_event = e.copy()
+                updated_event['title'] = "✅ " + e['title']
                 updated_event['backgroundColor'] = "#B0B0B0"
                 updated_event['borderColor'] = "#B0B0B0"
+                updated_event['textColor'] = "rgba(0, 0, 0, 0.6)"  # <-- Fade text color
                 updated_events.append(updated_event)
             else:
-                updated_events.append(event)
+                updated_events.append(e)
 
-        st.session_state.events = updated_events  # Save updated events
+        # Update the session_state
+        st.session_state.events = updated_events
 
-        # 🚨 Clear selected event after marking complete
-        st.session_state.pop("selected_event_title", None)
-        st.session_state.pop("selected_event_start", None)
+        # Clear selected event
+        del st.session_state.selected_event_title
+        del st.session_state.selected_event_start
 
-        st.success("Marked as completed! ✅")
+        st.success("Marked as completed! Click event again to see the crossed off title!")
 
-        # Force calendar to rerun safely
+        st.session_state.calendar_version += 1  # 🚀 force calendar to rebuild
+
+        # Force full page rerun
         # st.rerun()
+
+# def rerun_if_completed():
+#     """Helper to rerun cleanly after marking complete."""
+#     if st.session_state.get("just_marked_completed", False):
+#         del st.session_state.just_marked_completed
+#         st.rerun()
 
 @st.dialog("Welcome to Your Study Plan!", width="large")
 def show_welcome_message():
@@ -338,6 +344,8 @@ def show_welcome_message():
 
 def display_calendar(course_name):
     st.header("🗓️ " + st.session_state.initial_input.get("name") + "'s Study Calendar")
+    if 'calendar_version' not in st.session_state:
+      st.session_state.calendar_version = 0
     test_date = st.session_state.initial_input.get("test_date")
 
     if 'events' not in st.session_state:
@@ -387,27 +395,51 @@ def display_calendar(course_name):
             st.error("Error: No test date input.")
 
     if st.session_state.get('events'):
+        # clicked = calendar(
+        #     events=st.session_state.events,
+        #     options={
+        #         "initialView": "dayGridMonth",
+        #         "height": 700,
+        #         "editable": True,
+        #         "selectable": True,
+        #         "headerToolbar": {
+        #             "left": "prev,next today",
+        #             "center": "title",
+        #             "right": "dayGridMonth,timeGridWeek,timeGridDay"
+        #         }
+        #     },
+        #     custom_css="""
+        #         .fc-event {
+        #             font-size: 12px;
+        #             padding: 4px;
+        #         }
+        #     """,
+        #     callbacks=["eventClick"],
+        #     key="study_calendar"
+        # )
+
         clicked = calendar(
-            events=st.session_state.events,
-            options={
-                "initialView": "dayGridMonth",
-                "height": 700,
-                "editable": True,
-                "selectable": True,
-                "headerToolbar": {
-                    "left": "prev,next today",
-                    "center": "title",
-                    "right": "dayGridMonth,timeGridWeek,timeGridDay"
-                }
-            },
-            custom_css="""
-                .fc-event {
-                    font-size: 12px;
-                    padding: 4px;
-                }
-            """,
-            callbacks=["eventClick"],
-            key="study_calendar"
+          events=st.session_state.events,  # Always pulling updated events
+          options={
+              "initialView": "dayGridMonth",
+              "height": 700,
+              "editable": True,
+              "selectable": True,
+              "headerToolbar": {
+                  "left": "prev,next today",
+                  "center": "title",
+                  "right": "dayGridMonth,timeGridWeek,timeGridDay"
+              }
+          },
+          custom_css="""
+              .fc-event {
+                  font-size: 12px;
+                  padding: 4px;
+              }
+          """,
+          callbacks=["eventClick"],  # Enable event click callback
+          # key=f"study_calendar_{len(st.session_state.events)}"  # ← 👈 dynamic key to force calendar refresh
+          key=f"study_calendar_v{st.session_state.calendar_version}"  # 🔥 force re-render
         )
 
         if clicked and clicked.get("eventClick"):
@@ -415,5 +447,6 @@ def display_calendar(course_name):
             st.session_state.selected_event_title = event['title']
             st.session_state.selected_event_start = event['start']
             show_event_details()
+        # rerun_if_completed()
     else:
         st.error("Error: Cannot generate study plan.")
