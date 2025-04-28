@@ -101,8 +101,6 @@ else:
 # print(response.get("response", response))
 
 # --- Parse test into questions + answers ---
-import re
-
 raw_output = response.get("response", response)
 
 # Split by the answer key section

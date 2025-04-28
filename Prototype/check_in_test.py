@@ -31,6 +31,29 @@ def generate_check_in_test_page():
       st.session_state.go_home = True
       st.rerun()
 
+    # ✅ Insert popup control here
+    if 'show_check_in_popup' not in st.session_state:
+        st.session_state.show_check_in_popup = True
+
+    if st.session_state.show_check_in_popup:
+        with st.expander("📝 Welcome to Your Custom Practice Test!", expanded=True):
+              st.markdown("""
+              Here's how to set up your test:
+
+              - **Choose Topics**: Select one or more subtopics you want to be tested on. *(You can also select 'All' to be tested on everything.)*
+              - **Number of Questions**: Pick how many questions you want — between 5 and 20.
+              - **Question Format**: Choose whether you want **multiple choice** or **short answer** questions.
+              - **Familiarity Slider**: Select how familiar you are with the material.  
+                - Lower values = easier, more basic questions.  
+                - Higher values = harder, more in-depth questions.
+
+              ---
+
+            🔔 **Please Note**:  
+            The questions generated are strictly conceptual and are designed to test if you have studied the uploaded material.  
+            They are not guaranteed to cover every nuance or ensure complete mastery of the topics.
+            """)
+
     st.header("Check-In Test Generator")
     st.write("Build a custom practice test focused on specific subtopics to help you study.")
 
