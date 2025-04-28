@@ -18,7 +18,7 @@ def generate_test_page():
     st.divider()
 
     # Home button
-    if st.button("Home"):
+    if st.button("Home", type='primary'):
       # Reset any test session variables
       st.session_state.generate_test = False
       st.session_state.upload_notes = False
