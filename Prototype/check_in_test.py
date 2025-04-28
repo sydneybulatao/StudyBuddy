@@ -98,7 +98,7 @@ def generate_check_in_test_page():
           help="1 = not at all familiar, 5 = very familiar"
       )
 
-      st.session_state.test_input["selected_topics"] = selected_topics
+      st.session_state.test_input["selected_topics"] = final_selected_topics
 
       submit = st.form_submit_button("Generate Practice Test")
 
@@ -147,7 +147,7 @@ def generate_check_in_test_page():
         Your job is to generate a **Check-In Practice Test** that:
         - Contains EXACTLY {num_questions} questions — no more, no less.
         - Uses ONLY this question format: "{question_type}"
-        - Focuses ONLY on the following selected subtopics: {', '.join(selected_topics)}
+        - Focuses ONLY on the following selected subtopics: {', '.join(final_selected_topics)}
         - Aligns with the student's familiarity rating of {familiarity}/5:
         - 1-2 = easier questions on basic ideas and definitions.
         - 3 = mixed difficulty, with some reasoning or applied questions.
