@@ -68,6 +68,7 @@ def home_page():
   with nav:
     days_left = str((st.session_state.initial_input["test_date"] - date.today()).days)
     st.markdown(f"""
+        <br>
         <div style="background-color: #ECECEC; padding: 20px; border-radius: 10px; width: 100%;">
           <h3>{greeting}{st.session_state.initial_input["name"]}!</h3>
           <p>Currently Studying: {st.session_state.initial_input["course"]}</p>
@@ -93,9 +94,11 @@ def home_page():
 
     ### Buttons for naviation
     check_in_test = st.button("Take Check-In Test", 
-      help="Take a focused test on selected topics you've studied so far.")
+      help="Take a focused test on selected topics you've studied so far.",
+      use_container_width=True, type="primary")
     take_test = st.button("Take Overall Practice Test", 
-      help="Take a test on all topics.")
+      help="Take a test on all topics.",
+      use_container_width=True, type="primary")
 
     ## Handle button clicks
     if take_test:
@@ -107,6 +110,7 @@ def home_page():
 
     if ('test_stats' in st.session_state):
       st.markdown(f"""
+          <br>
           <div style="background-color: #ECECEC; padding: 20px; border-radius: 10px; width: 100%;">
             <p style="font-size: 20px;"><strong>Last Test Taken:</strong></p>
             <p>Score: {st.session_state.test_stats['score']}%</p>
@@ -116,6 +120,7 @@ def home_page():
       """, unsafe_allow_html=True)
     else:
       st.markdown(f"""
+          <br>
           <div style="background-color: #ECECEC; padding: 20px; border-radius: 10px; width: 100%;">
             <p style="font-size: 20px;"><strong>Last Test Taken:</strong></p>
             <p>No results yet...</p>
