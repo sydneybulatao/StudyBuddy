@@ -44,13 +44,16 @@ def take_test_page():
     if (test_type == "Diagnostic Test"):
       st.write("""
             Welcome to your personalized diagnostic test!  
-            This short assessment is designed to evaluate your familiarity with the key topics from your uploaded notes.  
+            This short assessment is designed to **evaluate your familiarity** with the key topics from your uploaded notes.  
 
-            Please answer each question to the best of your ability. Star any questions you're uncertain about. 
+            Please answer each question to the **best of your ability**.  
+            ⭐ **Star** any questions you're uncertain about to remember to review after grading.  
             Your results will help tailor your future study plan to focus on the areas where you need the most support.
             """)
     else:
-      st.write("Answer all questions—if you're unsure, make your best guess. Star any questions you're uncertain about so you can review them and make sure you understand the answer after submitting. Good luck!")
+      st.write("""**Answer all questions**—if you're unsure, make your best guess.  
+              ⭐ **Star** any questions you're uncertain about to remember to review after grading.  
+              Good luck!""")
 
     # Initialize session state for starred questions
     if "starred_questions" not in st.session_state:
@@ -96,7 +99,6 @@ def take_test_page():
       test.markdown("<br>", unsafe_allow_html=True)
 
     # Submit button
-    # TODO: form verification - ensure all questions answered or attempted
     submit = test.form_submit_button('Submit')
 
     ### Go to grade test page

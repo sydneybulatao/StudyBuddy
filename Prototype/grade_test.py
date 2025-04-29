@@ -229,23 +229,8 @@ def grade_test_page():
             </div>
             <br>
         """, unsafe_allow_html=True)
-
-        # Styling for the button
-        st.markdown("""
-          <style>
-          button[kind="secondary"] {
-            background-color: #78C18A;
-            color: white;
-            padding: 10px 10px;
-            margin: 8px 0;
-            border: 1px solid #087623;
-            cursor: pointer;
-            width: 200px;
-          }
-          </style>
-          """, unsafe_allow_html=True)
           
-        if st.button("Generate Study Plan", use_container_width=True):
+        if st.button("Generate Study Plan", use_container_width=True, type="primary"):
             # Reset any test session variables
             st.session_state.generate_test = False
             st.session_state.upload_notes = False
