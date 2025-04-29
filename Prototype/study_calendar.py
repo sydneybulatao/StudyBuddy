@@ -219,8 +219,11 @@ def generate_study_plan():
     return response.get("response", "") if isinstance(response, dict) else response
 
 def get_study_plan_and_parse(end, retry_count=0):
+    study_plan = "No Study Plan Generated."
     try:
         study_plan = generate_study_plan()
+        print(study_plan)
+        print("\n\n")
         lines = [line.strip() for line in study_plan.strip().splitlines() if line.strip()]
         entries = []
         for i in range(0, len(lines), 3):
@@ -256,7 +259,10 @@ def get_study_plan_and_parse(end, retry_count=0):
         return get_study_plan_and_parse(end, retry_count + 1)
       else:
         # Show the error after all retries used 
-        st.error("Error: Incorrect study plan format generated.")
+        st.error("Error: Unable to transform study plan into calendar format.")
+
+        # Show what was generated
+        st.info(study_plan)
         return []
 
 def generate_note(event):
@@ -310,39 +316,48 @@ def show_event_details():
 
         st.session_state.calendar_version += 1  # 🚀 force calendar to rebuild
 
-        # Force full page rerun
-        # st.rerun()
-
-# def rerun_if_completed():
-#     """Helper to rerun cleanly after marking complete."""
-#     if st.session_state.get("just_marked_completed", False):
-#         del st.session_state.just_marked_completed
-#         st.rerun()
+import streamlit as st
+import base64
 
 @st.dialog("Welcome to Your Study Plan!", width="large")
 def show_welcome_message():
-    with open("gifs/click.gif", "rb") as file_:
-        contents = file_.read()
+    # Define steps as a list of (gif_path, message) tuples
+    steps = [
+        ("gifs/click.gif", "Click on tasks for more information"),
+        ("gifs/drag.gif", "Drag and drop tasks to customize"),
+        ("gifs/check.gif", "Check off completed tasks")
+    ]
+
+    # Initialize step tracker
+    step_key = "welcome_step"
+    if step_key not in st.session_state:
+        st.session_state[step_key] = 0
+
+    step = st.session_state[step_key]
+
+    # Stop if out of bounds
+    if step >= len(steps):
+        st.session_state[step_key] = 0
+        st.rerun()
+
+    gif_path, message = steps[step]
+
+    # Load and display the GIF
+    with open(gif_path, "rb") as f:
+        contents = f.read()
     data_url = base64.b64encode(contents).decode("utf-8")
 
     st.markdown(f"""
         <div style='text-align: center;'>
-            <img src="data:image/gif;base64,{data_url}" alt="click task gif" style="max-width: 100%; height: auto;" />
-            <p style="font-weight: bold;">Click on tasks for more information</p>
+            <img src="data:image/gif;base64,{data_url}" alt="step gif" style="max-width: 100%; height: auto;" />
+            <p style="font-weight: bold;">{message}</p>
         </div>
     """, unsafe_allow_html=True)
 
-    if st.button("Next", type="primary"):
-        with open("gifs/drag.gif", "rb") as file_:
-            contents = file_.read()
-        data_url = base64.b64encode(contents).decode("utf-8")
-
-        st.markdown(f"""
-            <div style='text-align: center;'>
-                <img src="data:image/gif;base64,{data_url}" alt="drag task gif" style="max-width: 100%; height: auto;" />
-                <p style="font-weight: bold;">Drag and drop tasks to customize</p>
-            </div>
-        """, unsafe_allow_html=True)
+    # Show Next button
+    if step < len(steps) - 1:
+        if st.button("Next", type="primary", key=f"next_{step}"):
+            st.session_state[step_key] += 1
 
 def display_calendar(course_name):
     st.header("🗓️ " + st.session_state.initial_input.get("name") + "'s Study Calendar")
@@ -397,29 +412,6 @@ def display_calendar(course_name):
             st.error("Error: No test date input.")
 
     if st.session_state.get('events'):
-        # clicked = calendar(
-        #     events=st.session_state.events,
-        #     options={
-        #         "initialView": "dayGridMonth",
-        #         "height": 700,
-        #         "editable": True,
-        #         "selectable": True,
-        #         "headerToolbar": {
-        #             "left": "prev,next today",
-        #             "center": "title",
-        #             "right": "dayGridMonth,timeGridWeek,timeGridDay"
-        #         }
-        #     },
-        #     custom_css="""
-        #         .fc-event {
-        #             font-size: 12px;
-        #             padding: 4px;
-        #         }
-        #     """,
-        #     callbacks=["eventClick"],
-        #     key="study_calendar"
-        # )
-
         clicked = calendar(
           events=st.session_state.events,  # Always pulling updated events
           options={
@@ -440,7 +432,6 @@ def display_calendar(course_name):
               }
           """,
           callbacks=["eventClick"],  # Enable event click callback
-          # key=f"study_calendar_{len(st.session_state.events)}"  # ← 👈 dynamic key to force calendar refresh
           key=f"study_calendar_v{st.session_state.calendar_version}"  # 🔥 force re-render
         )
 
@@ -449,6 +440,5 @@ def display_calendar(course_name):
             st.session_state.selected_event_title = event['title']
             st.session_state.selected_event_start = event['start']
             show_event_details()
-        # rerun_if_completed()
     else:
         st.error("Error: Cannot generate study plan.")
