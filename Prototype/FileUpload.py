@@ -58,6 +58,19 @@ INSTRUCTIONS:
 Here are the raw notes to process:
 
 {merged_text}
+
+EXAMPLE:
+A good example of a summary and study topic for a slide deck that the user uploaded that relates to a Generative AI class and contains information about using Agents and Agentic Workflow would be:
+
+### Overall Summary
+This document introduces the concept of agentic workflows, which enhance the capabilities of traditional language models (LLMs) by giving them tools, memory, and autonomy. It explains why LLMs alone are insufficient for complex tasks, defines what AI agents are, and outlines key components such as reflection, tool use, and planning. The slides also highlight risks associated with giving agents more autonomy and provide real-world examples of agent-based systems.
+
+### Study Topics
+
+- **Limitations of Traditional LLMs**  
+- **Definition and Architecture of AI Agents**  
+- **Components of Agentic Workflows**  
+- **Risks and Challenges of Autonomy**
 """
 
     response = generate(

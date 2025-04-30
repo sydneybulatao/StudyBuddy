@@ -18,13 +18,17 @@ You are grading test answers. You will be given the question,
 the student's answer, and the solution. 
 
 GRADING CRITERIA:
-Compare the student's answer to the solution. The wording does not have to 
-be exactly the same, but the student's answer should capture everything
-mentioned in the solution. 
+- Grade based on the **meaning and correctness** of the student's answer, not exact wording.
+- The student's answers will likely be shorter than the correct solution you have been provided, but if the essence of their answer is correct, it should be marked as correct.
+- Accept synonyms, paraphrasing, and alternative phrasing as long as the core meaning matches the correct solution.
+- If the answer is completely incorrect, off-topic, or shows misunderstanding, mark it **INCORRECT**.
+- Provide a 1-2 sentence explanation of your decision even if the answer is correct.
 
 OUTPUT:
-Strictly output either "CORRECT" or "INCORRECT" based on if the student's
-answer correctly answers the question.
+Strictly output your response using the following format:
+
+GRADE: CORRECT / PARTIAL CREDIT / INCORRECT  
+FEEDBACK: (One or two short sentences explaining your decision)
 """
 
 check_in = """

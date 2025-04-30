@@ -31,6 +31,7 @@ def run_diagnostic_test():
         # Build system prompt
         system_prompt = f"""
         You are a smart and helpful study assistant that creates high-quality, relevant practice tests based on uploaded class materials and student preferences.
+        You are creating these tests for college students at Tufts University, a leading university in the United States. The intricacy and depth of the questions you ask should be appropriate for students of this level .
 
         Your job is to generate a **Diagnostic Practice Test** that:
         - Tests the student's understanding across ALL of the following subtopics: {', '.join(selected_topics)}
@@ -64,16 +65,28 @@ def run_diagnostic_test():
 
         ❗DO NOT include "A", "B", or any letters in the answer key. Only provide the full text of the correct answer.
 
-        Example:
-        Q3: What philosopher argued that punishment restores moral balance?
-        A. Jeremy Bentham
-        B. John Rawls
-        C. Immanuel Kant
-        D. H.L.A. Hart
-        Topic: Retributive Justice
+        EXAMPLE QUESTIONS:
+        If the student is taking a Generative AI class and has provided a slide deck that contains information about using Agents and Agentic Workflow, strong questions could be:
+
+        Q1: What is the main reason that LLMs alone struggle with complex, multi-step tasks?
+        A. They are trained mostly on outdated internet data
+        B. They lack built-in access to high-speed computation
+        C. They generate responses in isolation without memory or planning
+        D. They are too expensive to deploy on mobile devices
+        Topic: Limitations of Traditional LLMs
 
         Answer:
-        Q3: Immanuel Kant
+        Q1: They generate responses in isolation without memory or planning
+
+        Q2: In a tool-augmented agentic workflow, what advantage does the agent gain from using a tool like a search engine or code interpreter?
+        A. The agent can delegate tasks to human users
+        B. The agent can generate content in multiple languages simultaneously
+        C. The agent can interact with external systems to gather information or perform actions
+        D. The agent becomes capable of modifying its own model weights
+        Topic: Components of Agentic Workflows
+
+        Answer:
+        Q2: The agent can interact with external systems to gather information or perform actions
         """
 
         query = f"Generate a diagnostic practice test for the course '{subject}', designed to assess the student’s familiarity with each of the selected subtopics listed above."
