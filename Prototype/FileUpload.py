@@ -93,11 +93,14 @@ Here are the raw notes to process:
                 break
 
     # Retry or final error
-    if (not study_topics or not summary_text.strip()):
-        if retry_count < 3:
+    print("Study topics:")
+    print(study_topics)
+    print("\n")
+    if ((len(study_topics) == 0) or (not summary_text.strip())):
+        if retry_count < 5:
             return generate_summary(rag_context, retry_count + 1)
         else:
-            st.error("Error: Unable to generate study topics and notes summary.")
+            st.error("Error: Unable to generate study topics and notes summary. Please try again.")
             return "", []
 
     return summary_text, study_topics

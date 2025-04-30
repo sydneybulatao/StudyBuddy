@@ -17,6 +17,18 @@ def generate_test_page():
     st.title("Study Buddy")
     st.divider()
 
+    # Home button
+    if st.button("Home", type='primary'):
+      # Reset any test session variables
+      st.session_state.generate_test = False
+      st.session_state.upload_notes = False
+      st.session_state.test_input_submitted = False
+      st.session_state.test_submitted = False
+      st.session_state.responses = {}
+
+      st.session_state.go_home = True
+      st.rerun()
+
     with st.expander("📝 Welcome to Your Overall Practice Test!", expanded=True):
       st.markdown("""
         Here's how to set up your overall practice test:
@@ -33,18 +45,6 @@ def generate_test_page():
         The questions generated are strictly conceptual and are designed to test if you have studied the uploaded material.  
         They are not guaranteed to cover every nuance or ensure complete mastery of the topics.
         """)
-
-    # Home button
-    if st.button("Home", type='primary'):
-      # Reset any test session variables
-      st.session_state.generate_test = False
-      st.session_state.upload_notes = False
-      st.session_state.test_input_submitted = False
-      st.session_state.test_submitted = False
-      st.session_state.responses = {}
-
-      st.session_state.go_home = True
-      st.rerun()
 
     st.header("Overall Practice Test Generator")
     st.write("Build a custom practice test, based on all study topics.")
