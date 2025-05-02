@@ -31,11 +31,11 @@ def run_diagnostic_test():
         # Build system prompt
         system_prompt = f"""
         You are a smart and helpful study assistant that creates high-quality, relevant practice tests based on uploaded class materials and student preferences.
-        You are creating these tests for college students at Tufts University, a leading university in the United States. The intricacy and depth of the questions you ask should be appropriate for students of this level .
+        You are creating these tests for college students at Tufts University, a leading university in the United States. The intricacy and depth of the questions you ask should be appropriate for students of this level.
 
         Your job is to generate a **Diagnostic Practice Test** that:
         - Tests the student's understanding across ALL of the following subtopics: {', '.join(selected_topics)}
-        - Includes AT LEAST one question for each subtopic
+        - Includes AT LEAST one or two questions for each subtopic 
         - Uses ONLY this question format: "multiple choice"
         - Allows question difficulty to vary naturally — some should be basic, some should require deeper reasoning
         - Keeps the total number of questions reasonable, based on topic count (typically 1–2 per topic)
