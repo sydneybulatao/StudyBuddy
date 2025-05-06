@@ -298,7 +298,7 @@ def show_event_details():
                 updated_event['title'] = "✅ " + e['title']
                 updated_event['backgroundColor'] = "#B0B0B0"
                 updated_event['borderColor'] = "#B0B0B0"
-                updated_event['textColor'] = "rgba(0, 0, 0, 0.6)"text color
+                updated_event['textColor'] = "rgba(0, 0, 0, 0.6)" #text color
                 updated_events.append(updated_event)
             else:
                 updated_events.append(e)
