@@ -1,5 +1,3 @@
-# File: study_calendar.py
-
 from streamlit_calendar import calendar
 from datetime import datetime, timedelta, date
 import streamlit as st
@@ -300,7 +298,7 @@ def show_event_details():
                 updated_event['title'] = "✅ " + e['title']
                 updated_event['backgroundColor'] = "#B0B0B0"
                 updated_event['borderColor'] = "#B0B0B0"
-                updated_event['textColor'] = "rgba(0, 0, 0, 0.6)"  # <-- Fade text color
+                updated_event['textColor'] = "rgba(0, 0, 0, 0.6)"text color
                 updated_events.append(updated_event)
             else:
                 updated_events.append(e)
@@ -314,10 +312,7 @@ def show_event_details():
 
         st.success("Marked as completed! Click event again to see the crossed off title!")
 
-        st.session_state.calendar_version += 1  # 🚀 force calendar to rebuild
-
-import streamlit as st
-import base64
+        st.session_state.calendar_version += 1  # force calendar to rebuild
 
 @st.dialog("Welcome to Your Study Plan!", width="large")
 def show_welcome_message():
@@ -432,7 +427,8 @@ def display_calendar(course_name):
               }
           """,
           callbacks=["eventClick"],  # Enable event click callback
-          key=f"study_calendar_v{st.session_state.calendar_version}"  # 🔥 force re-render
+          # force re-render
+          key=f"study_calendar_v{st.session_state.calendar_version}"  
         )
 
         if clicked and clicked.get("eventClick"):
