@@ -1,5 +1,3 @@
-# File: /Users/clarkbolin/Desktop/CS150/StudyBuddy/Prototype/FileUpload.py
-
 from llmproxy import generate, pdf_upload, retrieve
 import tempfile
 import time
@@ -24,7 +22,7 @@ def generate_summary(rag_context: list, retry_count: int = 0) -> Tuple[str, List
     if not rag_context:
         return "No context available to summarize.", []
 
-    # Step 1: Merge context safely
+    # Merge context safely
     merged_text = ""
     for collection in rag_context:
         if isinstance(collection, dict):
@@ -33,7 +31,7 @@ def generate_summary(rag_context: list, retry_count: int = 0) -> Tuple[str, List
         else:
             merged_text += str(collection) + "\n\n"
 
-    # Step 2: Ask LLM to summarize
+    # Ask LLM to summarize
     prompt = f"""
 You are a helpful study assistant.
 
@@ -85,7 +83,7 @@ This document introduces the concept of agentic workflows, which enhance the cap
 
     summary_text = response['response'] if isinstance(response, dict) else str(response)
 
-    # Step 3: Extract bolded study topics
+    # Extract bolded study topics
     study_topics = []
     lines = summary_text.splitlines()
     collecting_topics = False

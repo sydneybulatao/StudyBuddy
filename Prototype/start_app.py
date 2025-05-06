@@ -1,5 +1,3 @@
-# File: /Users/clarkbolin/Desktop/CS150/StudyBuddy/Prototype/start_app.py
-
 import streamlit as st
 import time
 from llmproxy import generate, pdf_upload, retrieve
